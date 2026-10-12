@@ -1,0 +1,1156 @@
+<title>WFM Re-proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #f1f4f5;
+    --surface: #fcfdfd;
+    --ink: #0f1417;
+    --ink-2: #48535a;
+    --muted: #6f7b83;
+    --hair: #dce2e5;
+    --axis: #c2cace;
+    --accent: #1d5fb0;
+    --accent-wash: rgba(42, 120, 214, 0.1);
+    --paper: #a3acb2;
+    --frontier: #0f1417;
+    --s-flat: #2a78d6;
+    --s-facts: #eb6834;
+    --s-id: #1baf7a;
+    --s-ner: #eda100;
+    --s-wiki: #e87ba4;
+    --s-tg: #008300;
+    --o-1: #184f95;
+    --o-2: #2a78d6;
+    --o-3: #86b6ef;
+    --good: #0ca30c;
+    --warn: #fab219;
+    --bad: #d03b3b;
+    --na: #898781;
+    --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #0c0f11;
+      --surface: #14191c;
+      --ink: #edf1f3;
+      --ink-2: #b6bfc5;
+      --muted: #8d989f;
+      --hair: #252c30;
+      --axis: #3a4247;
+      --accent: #7cb0ef;
+      --accent-wash: rgba(57, 135, 229, 0.16);
+      --paper: #6c767d;
+      --frontier: #edf1f3;
+      --s-flat: #3987e5;
+      --s-facts: #d95926;
+      --s-id: #199e70;
+      --s-ner: #c98500;
+      --s-wiki: #d55181;
+      --s-tg: #008300;
+      --o-1: #b7d3f6;
+      --o-2: #5598e7;
+      --o-3: #1c5cab;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #0c0f11;
+    --surface: #14191c;
+    --ink: #edf1f3;
+    --ink-2: #b6bfc5;
+    --muted: #8d989f;
+    --hair: #252c30;
+    --axis: #3a4247;
+    --accent: #7cb0ef;
+    --accent-wash: rgba(57, 135, 229, 0.16);
+    --paper: #6c767d;
+    --frontier: #edf1f3;
+    --s-flat: #3987e5;
+    --s-facts: #d95926;
+    --s-id: #199e70;
+    --s-ner: #c98500;
+    --s-wiki: #d55181;
+    --s-tg: #008300;
+    --o-1: #b7d3f6;
+    --o-2: #5598e7;
+    --o-3: #1c5cab;
+  }
+
+  body { background: var(--ground); color: var(--ink); font: 400 16px/1.6 var(--sans); }
+  .page { max-width: 1080px; margin: 0 auto; padding-inline: 20px; padding-block: 44px 72px; display: grid; gap: 64px; }
+  section { display: grid; gap: 20px; }
+  .page > *, section > * { min-width: 0; }
+  .prose { max-width: 68ch; display: grid; gap: 14px; }
+  .prose p { margin: 0; }
+  h1, h2, h3 { margin: 0; font-family: var(--display); text-wrap: balance; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2.1rem, 5vw, 3.3rem); line-height: 1.06; font-weight: 700; max-width: 20ch; }
+  h2 { font-size: clamp(1.45rem, 3vw, 1.85rem); line-height: 1.15; font-weight: 700; }
+  h3 { font-size: 1.1rem; font-weight: 600; }
+  .eyebrow { font: 500 0.76rem/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .dek { font-size: 1.15rem; line-height: 1.55; color: var(--ink-2); max-width: 62ch; margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 400 0.82rem/1.4 var(--mono); color: var(--muted); }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  strong { font-weight: 600; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  header.top { display: grid; gap: 18px; }
+
+  .ledger { display: grid; border-top: 1px solid var(--hair); }
+  .claim { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.15fr) 150px; gap: 8px 24px; padding-block: 16px; border-bottom: 1px solid var(--hair); align-items: start; }
+  .claim .label { font: 500 0.72rem/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .claim p { margin: 0; font-size: 0.95rem; line-height: 1.5; }
+  .claim .paper-said { color: var(--ink-2); }
+  @media (max-width: 760px) { .claim { grid-template-columns: 1fr; } }
+
+  .chip { display: inline-flex; align-items: center; gap: 8px; font: 500 0.84rem/1 var(--sans); padding: 7px 12px 7px 9px; border-radius: 999px; border: 1px solid var(--hair); background: var(--surface); white-space: nowrap; }
+  .chip .icon { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font: 700 0.72rem/1 var(--sans); color: #fff; }
+  .chip.good .icon { background: var(--good); }
+  .chip.bad .icon { background: var(--bad); }
+  .chip.warn .icon { background: var(--warn); color: #1d1606; }
+  .chip.na .icon { background: var(--na); }
+
+  .figure { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 18px 18px 12px; display: grid; gap: 12px; min-width: 0; }
+  .figure-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; }
+  .figure-title { font: 600 0.98rem/1.35 var(--sans); }
+  .figure-note { font-size: 0.85rem; color: var(--muted); margin: 0; }
+  .chart { width: 100%; min-width: 0; }
+  .chart svg { display: block; overflow: visible; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.84rem; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .swatch-line { width: 16px; height: 2px; border-radius: 2px; display: inline-block; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--hair); border-radius: 9px; padding: 3px; background: var(--surface); gap: 2px; flex-wrap: wrap; }
+  .seg button { font: 500 0.86rem/1 var(--sans); color: var(--ink-2); background: transparent; border: 0; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+  .seg button:hover { background: var(--accent-wash); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  .slider { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .slider label { font-size: 0.9rem; color: var(--ink-2); }
+  .slider output { font: 600 0.95rem/1 var(--sans); color: var(--ink); font-variant-numeric: tabular-nums; min-width: 8ch; }
+  .slider input { width: min(280px, 60vw); accent-color: var(--accent); }
+
+  .grid-2 { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 860px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .bars { display: grid; gap: 10px; }
+  .bar-row { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 3.4rem; gap: 10px; align-items: center; font-size: 0.88rem; }
+  .bar-row .name { color: var(--ink-2); }
+  .bar-track { height: 12px; border-radius: 0 4px 4px 0; background: transparent; position: relative; }
+  .bar-fill { height: 12px; border-radius: 0 4px 4px 0; }
+  .bar-row .val { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 0.84rem; color: var(--ink-2); }
+  .stats b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.86rem; font-variant-numeric: tabular-nums; }
+  th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--hair); white-space: nowrap; }
+  th:first-child, td:first-child, td.left, th.left { text-align: left; }
+  thead th { font: 500 0.74rem/1.3 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+  tbody th { font-weight: 500; }
+  td.best { font-weight: 600; }
+  .key { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+  details { border-top: 1px solid var(--hair); padding-top: 10px; }
+  summary { cursor: pointer; font-size: 0.86rem; color: var(--ink-2); }
+  details[open] summary { margin-bottom: 10px; }
+
+  blockquote { margin: 0; padding: 12px 16px; border-left: 3px solid var(--bad); background: var(--surface); border-radius: 0 8px 8px 0; font-size: 0.98rem; color: var(--ink); }
+  blockquote cite { display: block; margin-top: 6px; font: 400 0.8rem var(--mono); color: var(--muted); font-style: normal; }
+
+  .apps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 900px) { .apps { grid-template-columns: 1fr; } }
+  .app { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+  .app p { margin: 0; font-size: 0.93rem; line-height: 1.55; color: var(--ink-2); }
+  .app .evidence { font-size: 0.85rem; color: var(--ink); border-top: 1px solid var(--hair); padding-top: 10px; }
+  .tag { font: 500 0.7rem/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+  pre { margin: 0; background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font: 400 0.86rem/1.6 var(--mono); }
+  ul.plain { margin: 0; padding-left: 1.1rem; display: grid; gap: 6px; }
+  code { font-family: var(--mono); font-size: 0.88em; }
+  footer { font-size: 0.85rem; color: var(--muted); display: grid; gap: 8px; }
+
+  svg text { fill: var(--ink-2); font-family: var(--sans); }
+  svg .tick { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+  svg .axis-title { font-size: 11px; fill: var(--muted); }
+  svg .grid { stroke: var(--hair); stroke-width: 1; }
+  svg .baseline { stroke: var(--axis); stroke-width: 1; }
+  svg .row-label { font-size: 12px; fill: var(--ink-2); font-family: var(--mono); }
+  svg .group-label { font-size: 13px; font-weight: 600; fill: var(--ink); }
+  svg .group-note { font-size: 11px; fill: var(--muted); }
+  svg .gap-label { font-size: 12px; fill: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  svg .point-label { font-size: 12px; fill: var(--ink-2); }
+  svg .point-label.front { fill: var(--ink); font-weight: 600; }
+  svg .end-label { font-size: 12px; fill: var(--ink); }
+  svg .end-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+  svg .claim-label { font-size: 11px; fill: var(--muted); }
+  svg .link { stroke: var(--axis); stroke-width: 2; stroke-linecap: round; }
+  svg .leader { stroke: var(--axis); stroke-width: 1; fill: none; }
+  svg .hit { fill: transparent; stroke: none; cursor: default; }
+  svg .hit:focus-visible { outline: none; }
+  svg .hover-band { fill: var(--accent-wash); }
+  svg .crosshair { stroke: var(--muted); stroke-width: 1; }
+  svg .selection { stroke: var(--accent); stroke-width: 1.5; }
+  svg .claim-line { stroke: var(--muted); stroke-width: 1; }
+  svg .frontier-line { stroke: var(--frontier); stroke-width: 2; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+  svg circle { stroke: var(--surface); stroke-width: 2; }
+  .fill-paper { fill: var(--paper); background: var(--paper); }
+  .fill-frontier { fill: var(--frontier); background: var(--frontier); }
+  .fill-flat { fill: var(--s-flat); background: var(--s-flat); }
+  .fill-facts { fill: var(--s-facts); background: var(--s-facts); }
+  .fill-id { fill: var(--s-id); background: var(--s-id); }
+  .fill-ner { fill: var(--s-ner); background: var(--s-ner); }
+  .fill-wiki { fill: var(--s-wiki); background: var(--s-wiki); }
+  .fill-tg { fill: var(--s-tg); background: var(--s-tg); }
+  .fill-o1 { fill: var(--o-1); background: var(--o-1); }
+  .fill-o2 { fill: var(--o-2); background: var(--o-2); }
+  .fill-o3 { fill: var(--o-3); background: var(--o-3); }
+  .stacks { display: grid; gap: 10px; }
+  .stack-row { display: grid; grid-template-columns: 10.5rem minmax(0, 1fr); gap: 12px; align-items: center; font-size: 0.86rem; }
+  .stack-row .name { color: var(--ink-2); }
+  .stack { display: flex; gap: 2px; height: 14px; }
+  .stack .seg { min-width: 0; height: 14px; }
+  .stack .seg:last-child { border-radius: 0 4px 4px 0; }
+  .stack .seg:focus-visible { outline-offset: 1px; }
+  .stack-gap { height: 4px; }
+  .model { display: grid; gap: 16px; }
+  .stroke-flat { stroke: var(--s-flat); }
+  .stroke-facts { stroke: var(--s-facts); }
+  .stroke-id { stroke: var(--s-id); }
+  .stroke-ner { stroke: var(--s-ner); }
+  .stroke-wiki { stroke: var(--s-wiki); }
+  path.series { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+
+  .tip { position: fixed; z-index: 10; pointer-events: none; background: var(--surface); border: 1px solid var(--hair); border-radius: 8px; box-shadow: 0 8px 28px rgba(8, 14, 18, 0.16); padding: 9px 11px; font-size: 0.82rem; display: grid; gap: 4px; min-width: 150px; }
+  .tip-title { font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+  .tip-row { display: grid; grid-template-columns: 14px auto 1fr; gap: 8px; align-items: center; color: var(--ink-2); }
+  .tip-row strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .tip-key { width: 14px; height: 2px; border-radius: 2px; }
+  .missing { padding: 24px; border: 1px solid var(--bad); border-radius: 10px; background: var(--surface); }
+</style>
+
+<main class="page" id="page">
+  <header class="top">
+    <div class="eyebrow">Independent re-proof · arXiv 2609.18182v1 · Wiki Foundation Model (WFM)</div>
+    <h1>The LLM Wiki idea holds up. The paper's numbers don't.</h1>
+    <p class="dek">We re-ran every retrieval claim an outsider can check on the paper's own public test sets, with its stated embedding model: 3,000 questions, CPU only, no training and no API calls. Linking passages the way a wiki does really does beat flat chunks and knowledge-graph triples. The margins the paper reports rest on a baseline we measured <span data-v="gapRange"></span> points higher, and on eight cells that sit exactly a whole number below our measurement.</p>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <section aria-labelledby="ledger-h">
+    <div class="prose">
+      <div class="eyebrow">Claims ledger</div>
+      <h2 id="ledger-h">What the paper claims, and what we measured</h2>
+    </div>
+    <div class="ledger" id="ledger"></div>
+  </section>
+
+  <section aria-labelledby="lab1-h">
+    <div class="prose">
+      <div class="eyebrow">Lab 1 · Baseline</div>
+      <h2 id="lab1-h">The flat-retrieval baseline sits a whole number below the real one</h2>
+      <p>The paper's weakest baseline, "Native RAG", is plain dense retrieval with all-MiniLM-L6-v2, and anyone can recompute it. On the same HippoRAG 2 test sets we measure Recall@20 of <span data-v="flatR20"></span> for HotpotQA, 2Wiki and MuSiQue. The paper prints <span data-v="paperR20"></span>.</p>
+      <p>On <span data-v="wholeSets"></span> every published cell equals our measurement minus exactly <span data-v="wholeGaps"></span> points, within ±0.005, the paper's own rounding. If the gaps were independent errors, each would land that close to a whole number about 1% of the time; <span id="odds"></span>. The embedding without the title prefix shows no such pattern, so the published row matches this exact configuration, shifted.</p>
+    </div>
+    <div class="figure">
+      <div class="figure-head">
+        <div class="figure-title">Recall@k: published baseline vs our measurement</div>
+        <div class="legend">
+          <span><i class="swatch-dot fill-paper"></i>Paper's "Native RAG"</span>
+          <span><i class="swatch-dot fill-flat"></i>Measured, same model and test set</span>
+        </div>
+      </div>
+      <div class="chart" id="dumbbell"></div>
+      <details>
+        <summary>Show the numbers</summary>
+        <div class="table-wrap" id="lab1-table"></div>
+      </details>
+    </div>
+    <blockquote>
+      <span data-v="admission"></span>
+      <cite>WFM paper, Section 4.4 Implementation Details (arXiv v1)</cite>
+    </blockquote>
+    <p class="figure-note" id="monotonic-note"></p>
+  </section>
+
+  <section aria-labelledby="lab2-h">
+    <div class="prose">
+      <div class="eyebrow">Lab 2 · Representation vs storage</div>
+      <h2 id="lab2-h">Links buy most of the gain. Facts buy the rest at eight times the storage.</h2>
+      <p>Same questions, same embedder, same corpus; only the stored representation changes. The graph variants use the LLM-extracted triples HippoRAG published for these corpora, searched with personalized PageRank at HippoRAG 2's default settings. Nothing is trained or tuned on the test questions.</p>
+      <p>Adding passages to a triple graph lifts average Recall@20 by <span data-v="ablation"></span> points; the paper's own ablation reports 7.48. Plain title links, found by string matching with no LLM at all, reach <span data-v="idAvg"></span> at <span data-v="idStorage"></span> the storage of flat retrieval. The exception is MuSiQue, whose questions don't follow page links: there title links change Recall@20 by <span data-v="idMusique"></span> points, within noise, and the fact layer adds as much as the entity links do.</p>
+    </div>
+    <div class="controls" role="group" aria-label="Dataset for Lab 2">
+      <div class="seg" id="lab2-seg"></div>
+    </div>
+    <div class="figure">
+      <div class="figure-head">
+        <div class="figure-title" id="scatter-title">Recall@20 against storage, relative to flat passages at fp32</div>
+        <div class="legend">
+          <span><i class="swatch-dot fill-frontier"></i>Best recall for its storage</span>
+          <span><i class="swatch-dot fill-paper"></i>Dominated</span>
+        </div>
+      </div>
+      <div class="chart" id="scatter"></div>
+      <div class="table-wrap" id="lab2-table"></div>
+      <p class="figure-note" id="lab2-ci"></p>
+    </div>
+    <div class="figure">
+      <div class="figure-head">
+        <div class="figure-title">Does a better extractor rescue triples? MuSiQue, Recall@20</div>
+      </div>
+      <div class="table-wrap" id="extractor-table"></div>
+      <p class="figure-note">Triples extracted by three different LLMs over the same 11,656 passages. Stronger extractors help the triple graph, but it still trails the plain passages it was built from.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="lab4-h">
+    <div class="prose">
+      <div class="eyebrow">Lab 4 · Model context</div>
+      <h2 id="lab4-h">How much context does the model have to read?</h2>
+      <p>Recall@k counts passages. A model's context window counts tokens, and a fact costs about a tenth of a passage. So we read each method's ranked output in order and measured how many tokens pass before the gold answer first appears. Questions answered yes/no, or whose answer is already named in the question, are left out.</p>
+      <p>Facts are compact, but that doesn't help here: at almost every budget they carry the answer less often than passages do. The link-only methods keep the dense top five, so their gains start once the budget runs past those five passages (roughly 750 tokens) and peak around 2,048.</p>
+      <p id="lab4-summary"></p>
+    </div>
+    <div class="controls">
+      <div class="seg" id="lab4-seg" role="group" aria-label="Dataset for Lab 4"></div>
+      <div class="slider">
+        <label for="budget">Context budget</label>
+        <input type="range" id="budget" min="0" max="6" step="1" value="2">
+        <output id="budget-out" for="budget"></output>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="figure">
+        <div class="figure-head">
+          <div class="figure-title">Questions with the answer in context, by budget</div>
+        </div>
+        <div class="legend" id="lines-legend"></div>
+        <div class="chart" id="lines"></div>
+      </div>
+      <div class="figure">
+        <div class="figure-head">
+          <div class="figure-title" id="bars-title"></div>
+        </div>
+        <div class="bars" id="bars"></div>
+        <div class="stats" id="median-stats"></div>
+      </div>
+    </div>
+    <details>
+      <summary>Show the numbers</summary>
+      <div class="table-wrap" id="lab4-table"></div>
+    </details>
+  </section>
+
+  <section aria-labelledby="lab5-h">
+    <div class="prose">
+      <div class="eyebrow">Lab 5 · Structure</div>
+      <h2 id="lab5-h">What the link walk needs from the data</h2>
+      <p>We traced every question's evidence through two overlays. <strong>Title links</strong> give each passage its own page title as a home and link it to the titles its text names, found by string match. <strong>NER links</strong> connect passages through the entities an LLM extracted from them. For links to help, three things have to hold: dense search lands on part of the evidence, the rest of the evidence is linked to that part, and the link is one hop from a dense hit.</p>
+      <p id="lab5-summary"></p>
+    </div>
+    <div class="grid-2">
+      <div class="figure">
+        <div class="figure-head"><div class="figure-title">How each question's evidence passages are linked to each other</div></div>
+        <div class="legend" id="pairs-legend"></div>
+        <div class="stacks" id="pairs"></div>
+      </div>
+      <div class="figure">
+        <div class="figure-head">
+          <div class="figure-title">Structure predicts the gain</div>
+          <div class="legend">
+            <span><i class="swatch-dot fill-id"></i>Title links</span>
+            <span><i class="swatch-dot fill-ner"></i>NER links</span>
+          </div>
+        </div>
+        <div class="chart" id="predict"></div>
+        <p class="figure-note">One point per dataset and overlay. Across: share of the evidence missed by dense top 20 that sits one link from the dense top five. Up: Recall@20 gained over flat retrieval.</p>
+      </div>
+    </div>
+    <div class="figure">
+      <div class="figure-head"><div class="figure-title">The PageRank walk against two stand-ins a document store can run without a graph engine</div></div>
+      <div class="table-wrap" id="lab5-table"></div>
+      <p class="figure-note" id="lab5-note"></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="apps-h">
+    <div class="prose">
+      <div class="eyebrow">Applications</div>
+      <h2 id="apps-h">Where the choice of representation pays off</h2>
+      <p>Three places where these measurements change a design decision. The evidence line under each is measured here; the application itself is a proposal.</p>
+    </div>
+    <div class="apps">
+      <article class="app">
+        <div class="tag">Documents with identifiers</div>
+        <h3>A document wiki that needs no LLM to build</h3>
+        <p>Technical documents already cite each other by identifier: a standard such as RFC 9110, a document number, a ticket such as TKT-4821. Link every chunk to the identifiers it names and to the document it belongs to, then walk those links from the top dense hits. That is the title-links method, with document numbers in place of page titles.</p>
+        <p class="evidence" data-v="appId"></p>
+      </article>
+      <article class="app">
+        <div class="tag">Agent context packing</div>
+        <h3>Fill the context with linked passages, not facts</h3>
+        <p>Facts look like the efficient way to spend a small context window: they are a tenth the length of a passage. They also carry the answer far less often. An agent packing evidence under a token budget should rank passages and follow their links, and keep a fact layer only to re-rank the first few slots, which is where it earns its storage.</p>
+        <p class="evidence" data-v="appBudget"></p>
+      </article>
+      <article class="app">
+        <div class="tag">Agent memory</div>
+        <h3>Episodic memory as a linked wiki</h3>
+        <p>Store each episode (a ticket, a run log, a hand-off note) as a passage, link it to the entities it mentions (systems, people, work items), and retrieve with the same walk from the top matches. Episodes that never share wording with the query but share an entity with a top hit come along.</p>
+        <p class="evidence" data-v="appMemory"></p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="corpora-h">
+    <div class="prose">
+      <div class="eyebrow">Other corpora</div>
+      <h2 id="corpora-h">The same structure, built from identifiers you already have</h2>
+      <p>Nothing in the method is specific to Wikipedia. It needs six properties in the data, and business records usually carry them as identifiers.</p>
+      <ul class="plain">
+        <li><strong>Self-describing units.</strong> Each chunk embeds its home's name with its text. <span data-v="titlePrefix"></span></li>
+        <li><strong>One home per unit.</strong> Every chunk belongs to one identifiable thing: a page, a document number, a ticket.</li>
+        <li><strong>Mentions of other identifiers.</strong> Chunks name other things by number or name. A match against the register of homes is a direct reference; a shared pattern such as a standard's number links chunks that cite the same thing. Structured fields such as parent or linked items count as mentions without any text extraction.</li>
+        <li><strong>A dense foothold.</strong> <span data-v="foothold"></span></li>
+        <li><strong>Evidence one hop away.</strong> <span data-v="oneHop"></span></li>
+        <li><strong>Specific identifiers.</strong> A link is worth the inverse of its identifier's degree. Hubs such as audit columns, lookup tables or a country everyone mentions connect everything and so say nothing. <span data-v="specificity"></span></li>
+      </ul>
+    </div>
+    <div class="grid-2">
+      <div class="model">
+        <div class="figure">
+          <div class="figure-title">The data model: key fields on each chunk, no graph store</div>
+          <pre>unit   unitId, homeKey, linkKeys[] (home first,
+       then mentions), text, vector, acl, labels,
+       citation
+key    kind-prefixed, words joined by single spaces:
+       "doc:DOC 1042", "rfc:RFC 9110",
+       "ticket:TKT 4821"
+walk   seed   dense top 5, ACL-filtered
+       step   units sharing a key with a seed, scored
+              by seed weight / seed key count / key
+              degree, summed over shared keys
+       pack   seeds in dense order, then stepped units
+              by score, then the rest of the dense list</pre>
+        </div>
+      </div>
+      <div class="figure">
+        <div class="figure-title">On a document store with vector search</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th class="left">Chunk field</th><th class="left">Value</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">homeKey</th><td class="left">doc: + the normalized document number, shared by every revision</td></tr>
+              <tr><th scope="row">linkKeys</th><td class="left">homeKey, then identifiers found by the corpus's own numbering patterns: document numbers, standards cited, ticket numbers</td></tr>
+              <tr><th scope="row">embedded text</th><td class="left">document number, title and revision before the chunk text</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="figure-note">Chunk records usually carry the vector, an access list, labels and a citation already. All three queries filter on the caller's access, so the step only passes through documents the caller can see: a hidden document can't be a seed, count toward a degree, or be returned.</p>
+      </div>
+    </div>
+    <pre>-- generic SQL over a store with array fields and vector search; the service does the scoring
+-- 1. seeds: the existing vector query, returning linkKeys
+SELECT TOP 5 c.id, c.linkKeys, ... FROM c
+WHERE ARRAY_CONTAINS(c.acl, @principal)
+ORDER BY VECTOR_DISTANCE(c.embedding, @queryVector)
+
+-- 2. degrees of the seeds' keys (or keep counts per key at ingest)
+SELECT k AS key, COUNT(1) AS degree FROM c JOIN k IN c.linkKeys
+WHERE ARRAY_CONTAINS(c.acl, @principal) AND ARRAY_CONTAINS(@seedKeys, k)
+GROUP BY k
+
+-- 3. units sharing a key, skipping keys above a degree cap
+SELECT c.id, c.linkKeys, c.citation FROM c
+WHERE ARRAY_CONTAINS(c.acl, @principal)
+  AND EXISTS(SELECT VALUE k FROM k IN c.linkKeys WHERE ARRAY_CONTAINS(@keys, k))</pre>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="left">Source</th><th class="left">Unit</th><th class="left">homeKey</th><th class="left">mentionKeys</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Documents</th><td class="left">chunk of file content</td><td class="left">document number</td><td class="left">document numbers, standards cited, ticket numbers</td></tr>
+          <tr><th scope="row">Tickets, issues</th><td class="left">title, description, comments</td><td class="left">ticket id</td><td class="left">linked tickets (fields), document numbers, component names</td></tr>
+          <tr><th scope="row">Wiki or knowledge base</th><td class="left">section</td><td class="left">page title</td><td class="left">page links (fields), page titles named in the text</td></tr>
+          <tr><th scope="row">Code repositories</th><td class="left">file or commit message</td><td class="left">file path or commit id</td><td class="left">file paths, ticket ids, component names</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose">
+      <p><strong>Check a corpus before building its overlay.</strong> <code>overlay.profile</code> reports the structural potential of any corpus. With 30 to 50 labeled questions it also reports the dense foothold rate, how evidence pairs are linked, and how much missed evidence sits one hop from a seed: the measures that tracked the gain here. A corpus that profiles like MuSiQue under title links will not benefit from them.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="repro-h">
+    <div class="prose">
+      <div class="eyebrow">Reproduce</div>
+      <h2 id="repro-h">Run it yourself</h2>
+      <p>One script, pinned inputs. It downloads the benchmark files and cached OpenIE output from fixed HippoRAG commits and the paper source from arXiv v1, checks SHA-1 checksums, and refuses to run on anything that differs. Recall, storage, context coverage, the audit and this page are all regenerated from the run.</p>
+    </div>
+    <pre>cd wfm-reproof
+uv run reproof.py      # ~20 min cold on CPU, ~5 min with the embedding cache
+# writes results/results.json, results/report.md, results/wfm-reproof.html</pre>
+    <div class="prose">
+      <h3>What this does not test</h3>
+      <ul class="plain">
+        <li>WFM itself. No code or weights were released, so its learned attention model, the attention-variance regularizer and the claim that it prevents attention collapse are unverified.</li>
+        <li>The 10.5× distributed-training speedup, which needs the authors' code and a multi-GPU cluster.</li>
+        <li>LLM-judged answer accuracy and the two long-term memory benchmarks (PersonaMem, RHELM).</li>
+        <li>HotpotQA in Lab 2 uses HippoRAG's older 9,221-passage corpus because that is the one its cached triples cover; Lab 1 uses the current 9,811-passage version.</li>
+        <li>HotpotQA and 2Wiki were built by following Wikipedia hyperlinks and Wikidata relations, which favors any link-based method. MuSiQue is the harder, less link-shaped test.</li>
+        <li>Answer-in-context is a proxy for answerability. It shows the answer string reached the model, not that the model used it.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div>Sources: <a href="https://arxiv.org/abs/2609.18182" target="_blank" rel="noopener">WFM paper (arXiv 2609.18182)</a> · <a href="https://github.com/OSU-NLP-Group/HippoRAG" target="_blank" rel="noopener">HippoRAG code, data and cached OpenIE</a> · <a href="https://huggingface.co/datasets/osunlp/HippoRAG_2" target="_blank" rel="noopener">HippoRAG 2 benchmark release</a> · <a href="https://arxiv.org/abs/2502.01113" target="_blank" rel="noopener">GFM-RAG (arXiv 2502.01113)</a> · <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2" target="_blank" rel="noopener">all-MiniLM-L6-v2</a></div>
+    <div id="footer-meta"></div>
+  </footer>
+</main>
+
+<script>
+const R = {"audit": {"tables": {"tab:multihop-recall": {"Native RAG": [44.24, 55.35, 62.68, 68.1, 31.28, 31.8, 46.22, 49.22, 17.28, 19.28, 37.1, 44.44], "RAPTOR": [56.0, 72.63, 79.98, 84.3, 49.1, 60.12, 65.2, 68.1, 34.29, 46.82, 55.06, 61.93], "E2GraphRAG": [49.79, 63.92, 75.22, 80.87, 27.7, 34.9, 40.9, 52.8, 19.4, 24.4, 31.4, 43.7], "LightRAG": [45.8, 63.2, 70.4, 75.7, 37.0, 49.1, 53.9, 58.3, 27.0, 38.7, 46.8, 53.8], "GraphRAG": [44.1, 56.55, 67.2, 73.45, 28.65, 36.1, 42.3, 54.6, 14.35, 18.05, 23.2, 32.3], "HippoRAG1": [61.35, 76.2, 82.95, 85.5, 64.27, 73.12, 79.77, 84.13, 36.9, 48.64, 55.86, 61.04], "HippoRAG-IRCOT": [61.3, 76.9, 76.1, 83.8, 67.95, 78.75, 82.62, 86.93, 34.65, 44.81, 51.17, 57.77], "HippoRAG2": [62.8, 78.85, 82.77, 89.2, 66.82, 77.35, 81.26, 84.98, 40.47, 52.94, 60.57, 67.66], "Youtu-GraphRAG": [63.15, 79.3, 86.0, 89.7, 69.65, 80.95, 83.8, 88.5, 44.5, 60.75, 71.4, 75.9], "GFM-RAG": [52.95, 68.26, 76.63, 81.38, 50.19, 63.95, 68.3, 72.63, 24.31, 31.82, 38.92, 48.57], "WFM": [66.8, 82.45, 89.1, 93.2, 72.3, 83.4, 87.65, 90.15, 46.85, 63.9, 71.95, 75.24]}, "tab:memory-recall": {"Native RAG": [10.2, 14.6, 19.7, 19.8, 27.3, 35.4], "LightRAG": [4.1, 5.9, 7.0, 14.7, 21.6, 28.0], "GraphRAG": [10.5, 14.2, 22.7, 15.4, 23.7, 35.9], "Youtu-GraphRAG": [7.2, 14.8, 29.6, 12.99, 22.7, 48.24], "GFM-RAG": [1.9, 2.5, 3.0, 4.3, 5.9, 7.9], "A-mem": [23.7, 30.2, 38.2, 34.2, 43.8, 53.9], "MemoryOS": [22.5, 29.8, 35.4, 23.3, 30.9, 37.8], "LightMem": [8.6, 12.3, 15.0, 16.9, 21.8, 24.6], "WFM": [23.46, 37.39, 52.63, 38.81, 49.21, 60.03]}}, "non_monotonic_recall": [{"table": "tab:multihop-recall", "method": "HippoRAG-IRCOT", "block": 0, "values": [61.3, 76.9, 76.1, 83.8]}], "admission": "The newly completed cells and diagnostic sweeps are constructed planning values and require validation with measured runs before external use."}, "lab1": {"hotpotqa": {"passages": 9811, "embed_seconds": 71.8, "paper_native_rag": [44.24, 55.35, 62.68, 68.1], "variants": {"title+text fp32": {"recall": [58.0, 74.0, 80.55, 85.25], "bytes_per_vector": 1536, "gaps": [13.759999999999998, 18.65, 17.869999999999997, 17.150000000000006], "whole_numbers": false}, "text-only fp32": {"recall": [57.0, 73.75, 80.55, 84.95], "bytes_per_vector": 1536, "gaps": [12.759999999999998, 18.4, 17.869999999999997, 16.85000000000001], "whole_numbers": false}, "title+text int8": {"recall": [58.0, 73.95, 80.6, 85.1], "bytes_per_vector": 384, "gaps": [13.759999999999998, 18.6, 17.919999999999995, 17.0], "whole_numbers": false}, "title+text 1-bit": {"recall": [55.6, 70.9, 78.05, 83.25], "bytes_per_vector": 48, "gaps": [11.36, 15.550000000000004, 15.369999999999997, 15.150000000000006], "whole_numbers": false}}}, "2wikimultihopqa": {"passages": 6119, "embed_seconds": 31.9, "paper_native_rag": [31.28, 31.8, 46.22, 49.22], "variants": {"title+text fp32": {"recall": [51.275, 61.8, 66.225, 69.225], "bytes_per_vector": 1536, "gaps": [19.994999999999997, 29.999999999999996, 20.004999999999995, 20.004999999999995], "whole_numbers": true}, "text-only fp32": {"recall": [48.05, 59.775, 65.5, 68.625], "bytes_per_vector": 1536, "gaps": [16.769999999999996, 27.974999999999998, 19.28, 19.405], "whole_numbers": false}, "title+text int8": {"recall": [51.275, 61.75, 66.225, 69.175], "bytes_per_vector": 384, "gaps": [19.994999999999997, 29.95, 20.004999999999995, 19.955], "whole_numbers": false}, "title+text 1-bit": {"recall": [47.4, 58.7, 63.525, 67.3], "bytes_per_vector": 48, "gaps": [16.119999999999997, 26.900000000000002, 17.305, 18.08], "whole_numbers": false}}}, "musique": {"passages": 11656, "embed_seconds": 78.1, "paper_native_rag": [17.28, 19.28, 37.1, 44.44], "variants": {"title+text fp32": {"recall": [37.27499999999997, 49.275000000000034, 57.099999999999945, 64.44166666666656], "bytes_per_vector": 1536, "gaps": [19.99499999999997, 29.995000000000033, 19.999999999999943, 20.001666666666566], "whole_numbers": true}, "text-only fp32": {"recall": [34.06666666666662, 45.69166666666668, 54.124999999999964, 61.8166666666666], "bytes_per_vector": 1536, "gaps": [16.78666666666662, 26.411666666666676, 17.024999999999963, 17.3766666666666], "whole_numbers": false}, "title+text int8": {"recall": [37.26666666666663, 49.30833333333337, 57.141666666666616, 64.40833333333325], "bytes_per_vector": 384, "gaps": [19.98666666666663, 30.02833333333337, 20.041666666666615, 19.96833333333325], "whole_numbers": false}, "title+text 1-bit": {"recall": [34.199999999999946, 45.96666666666671, 54.56666666666666, 61.61666666666661], "bytes_per_vector": 48, "gaps": [16.919999999999945, 26.68666666666671, 17.46666666666666, 17.176666666666613], "whole_numbers": false}}}}, "lab2": {"hotpotqa": {"recall": {"flat": [57.2, 71.75, 80.05, 84.85], "triples": [53.75, 69.45, 78.2, 84.15], "triple_graph": [50.35, 71.15, 79.0, 81.95], "id_links": [48.4, 71.75, 88.55, 91.65], "wiki_links": [54.6, 71.75, 86.9, 92.0], "wiki_graph": [51.25, 78.1, 88.75, 93.5]}, "paired_diff_ci95": {"wiki_graph - flat": {"R@5": [6.35, 4.5, 8.251249999999994], "R@20": [8.65, 7.3, 9.9]}, "wiki_graph - triple_graph": {"R@5": [6.95, 5.55, 8.4], "R@20": [11.55, 9.9, 13.201249999999993]}, "wiki_graph - wiki_links": {"R@5": [6.35, 4.65, 8.2], "R@20": [1.5, 0.29875000000000007, 2.801249999999993]}, "wiki_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [7.15, 5.5, 8.75]}, "id_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [6.8, 5.1, 8.4]}, "wiki_links - id_links": {"R@5": [0.0, 0.0, 0.0], "R@20": [0.35, -0.6, 1.3]}, "triples - flat": {"R@5": [-2.3, -4.0, -0.65], "R@20": [-0.7, -2.1, 0.7012499999999932]}, "triple_graph - flat": {"R@5": [-0.6, -2.8, 1.5], "R@20": [-2.9, -4.95, -0.9]}}, "context": {"eligible_questions": 830, "methods": {"facts": {"coverage": [22.048192771084338, 28.433734939759038, 36.506024096385545, 43.373493975903614, 50.24096385542168, 56.98795180722892, 61.566265060240966], "median_tokens": 1007.0}, "flat": {"coverage": [26.385542168674696, 38.795180722891565, 51.204819277108435, 60.24096385542169, 70.36144578313252, 76.26506024096386, 82.16867469879519], "median_tokens": 243.0}, "id_links": {"coverage": [22.650602409638555, 33.97590361445783, 47.83132530120482, 59.75903614457832, 81.44578313253012, 90.36144578313254, 91.6867469879518], "median_tokens": 301.5}, "wiki_links": {"coverage": [25.783132530120483, 36.98795180722891, 50.0, 60.36144578313253, 77.46987951807229, 88.67469879518072, 92.40963855421687], "median_tokens": 255.5}, "wiki_graph": {"coverage": [21.084337349397593, 33.49397590361446, 49.75903614457831, 67.83132530120481, 81.6867469879518, 88.19277108433735, 92.16867469879519], "median_tokens": 265.0}}}, "structure": {"id_links": {"identifiers": 8978, "mentions_per_unit": 1.0907710660448975, "units_sharing_an_identifier": 71.74926797527384, "links_on_top_1pct_identifiers": 24.6126651763916, "max_identifier_degree": 939, "gold_pairs": {"same home": 0.4, "direct reference": 65.1, "shared identifier": 2.7, "not linked": 31.8}, "dense_foothold": 95.0, "missed_gold_units": 303, "missed_one_hop_from_a_seed": 73.5973597359736, "missed_recovered": {"walk": 70.95709570957095, "expand": 47.194719471947195, "walk_once": 68.97689768976898}, "variants": {"expand": {"recall": [57.1, 71.75, 85.05, 89.5], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-2.15, -3.25, -1.0]}, "context": {"coverage": [26.385542168674696, 38.795180722891565, 51.204819277108435, 61.44578313253012, 76.3855421686747, 83.49397590361446, 88.55421686746988], "median_tokens": 243.0}}, "walk_once": {"recall": [57.2, 71.75, 89.45, 92.15], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [0.5, -0.1, 1.15]}, "context": {"coverage": [26.385542168674696, 38.795180722891565, 51.204819277108435, 61.566265060240966, 82.7710843373494, 91.44578313253012, 92.53012048192771], "median_tokens": 243.0}}}}, "wiki_links": {"identifiers": 61682, "mentions_per_unit": 11.007374471315476, "units_sharing_an_identifier": 97.8201930376315, "links_on_top_1pct_identifiers": 24.36181604862213, "max_identifier_degree": 1594, "gold_pairs": {"same home": 0.0, "direct reference": 0.0, "shared identifier": 76.6, "not linked": 23.4}, "dense_foothold": 95.0, "missed_gold_units": 303, "missed_one_hop_from_a_seed": 86.46864686468646, "missed_recovered": {"walk": 69.63696369636963, "expand": 20.792079207920793, "walk_once": 70.29702970297029}, "variants": {"expand": {"recall": [57.2, 71.75, 81.5, 86.75], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-5.25, -6.65, -3.85]}, "context": {"coverage": [26.385542168674696, 38.795180722891565, 51.204819277108435, 60.60240963855422, 72.40963855421687, 79.51807228915662, 85.3012048192771], "median_tokens": 243.0}}, "walk_once": {"recall": [57.2, 71.75, 87.55, 92.2], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [0.2, 0.05, 0.4]}, "context": {"coverage": [26.385542168674696, 38.795180722891565, 51.204819277108435, 61.084337349397586, 78.91566265060241, 89.03614457831324, 92.7710843373494], "median_tokens": 243.0}}}}}, "embed_seconds": {"passages": 69.0, "facts": 65.7}, "stats": {"passages": 9221, "unique_facts": 98674, "entities": 96914, "entity_entity_edges": 94922, "entity_passage_links": 145650, "titles": 8978, "title_links": 19234}, "storage_bytes": {"flat": 19407463, "triples": 157703008, "triple_graph": 160635419, "id_links": 19722816, "wiki_links": 21139551, "wiki_graph": 181208082}, "storage_bytes_int8_vectors": {"flat": 8784871, "triples": 44030560, "triple_graph": 46962971, "id_links": 9100224, "wiki_links": 10516959, "wiki_graph": 56913042}, "storage_components": {"passage text": 5244007, "passage vectors": 14163456, "fact text": 4555240, "fact vectors": 151563264, "fact provenance + endpoints": 1584504, "entity names": 1793347, "entity-entity edges": 1139064, "entity-passage links": 1165200, "NER entity names": 920096, "NER entity-passage links": 811992, "title index": 161481, "title links": 153872}, "llm_calls_to_build": {"flat": 0, "triples": 18442, "triple_graph": 18442, "id_links": 0, "wiki_links": 9221, "wiki_graph": 18442}, "openie_tokens_estimate": {"input": 8586779.5, "output": 1909788.75}}, "2wikimultihopqa": {"recall": {"flat": [51.275, 61.8, 66.225, 69.225], "triples": [56.825, 65.95, 69.475, 71.825], "triple_graph": [57.35, 76.075, 80.4, 82.15], "id_links": [46.825, 61.8, 84.325, 90.925], "wiki_links": [50.225, 61.8, 81.525, 89.25], "wiki_graph": [57.65, 79.675, 86.2, 89.075]}, "paired_diff_ci95": {"wiki_graph - flat": {"R@5": [17.875, 16.1, 19.575624999999995], "R@20": [19.85, 18.35, 21.35]}, "wiki_graph - triple_graph": {"R@5": [3.6, 2.425, 4.725], "R@20": [6.925, 5.675, 8.225624999999996]}, "wiki_graph - wiki_links": {"R@5": [17.875, 16.0, 19.65], "R@20": [-0.175, -1.45, 1.1]}, "wiki_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [20.025, 18.325, 21.75]}, "id_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [21.7, 19.949375, 23.500624999999996]}, "wiki_links - id_links": {"R@5": [0.0, 0.0, 0.0], "R@20": [-1.675, -2.5, -0.825]}, "triples - flat": {"R@5": [4.15, 2.75, 5.575], "R@20": [2.6, 1.275, 3.875]}, "triple_graph - flat": {"R@5": [14.275, 12.324375, 16.225624999999997], "R@20": [12.925, 10.924375000000001, 14.9]}}, "context": {"eligible_questions": 521, "methods": {"facts": {"coverage": [4.222648752399232, 9.021113243761997, 16.314779270633398, 23.80038387715931, 28.023032629558543, 33.20537428023032, 39.923224568138195], "median_tokens": null}, "flat": {"coverage": [3.262955854126679, 5.950095969289827, 12.092130518234164, 24.760076775431862, 35.50863723608445, 43.37811900191939, 52.01535508637236], "median_tokens": 3261.0}, "id_links": {"coverage": [2.111324376199616, 4.414587332053743, 11.708253358925145, 33.589251439539346, 72.16890595009598, 93.09021113243762, 95.96928982725528], "median_tokens": 682.0}, "wiki_links": {"coverage": [3.071017274472169, 4.798464491362764, 13.051823416506716, 37.81190019193858, 63.339731285988485, 87.1401151631478, 95.20153550863724], "median_tokens": 684.0}, "wiki_graph": {"coverage": [4.030710172744722, 10.9404990403071, 32.629558541266796, 59.88483685220729, 77.35124760076776, 84.83685220729367, 88.67562380038387], "median_tokens": 390.0}}}, "structure": {"id_links": {"identifiers": 5987, "mentions_per_unit": 0.5556463474423925, "units_sharing_an_identifier": 57.13351854878248, "links_on_top_1pct_identifiers": 10.455454140901566, "max_identifier_degree": 193, "gold_pairs": {"same home": 0.04597701149425287, "direct reference": 43.724137931034484, "shared identifier": 0.3218390804597701, "not linked": 55.9080459770115}, "dense_foothold": 97.7, "missed_gold_units": 838, "missed_one_hop_from_a_seed": 81.62291169451073, "missed_recovered": {"walk": 81.14558472553699, "expand": 69.92840095465394, "walk_once": 81.38424821002387}, "variants": {"expand": {"recall": [51.275, 61.8, 81.85, 88.625], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-2.3, -3.4256249999999997, -1.225]}, "context": {"coverage": [3.262955854126679, 5.950095969289827, 12.859884836852206, 36.660268714011515, 61.42034548944337, 78.69481765834932, 87.3320537428023], "median_tokens": 724.0}}, "walk_once": {"recall": [51.275, 61.8, 86.4, 92.875], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [1.95, 1.275, 2.725]}, "context": {"coverage": [3.262955854126679, 5.950095969289827, 12.667946257197697, 35.892514395393476, 72.7447216890595, 93.47408829174664, 96.1612284069098], "median_tokens": 668.0}}}}, "wiki_links": {"identifiers": 38193, "mentions_per_unit": 9.511848341232227, "units_sharing_an_identifier": 95.04821049191044, "links_on_top_1pct_identifiers": 20.694810152053833, "max_identifier_degree": 1096, "gold_pairs": {"same home": 0.0, "direct reference": 0.0, "shared identifier": 55.54022988505747, "not linked": 44.45977011494253}, "dense_foothold": 97.7, "missed_gold_units": 838, "missed_one_hop_from_a_seed": 88.90214797136038, "missed_recovered": {"walk": 75.17899761336515, "expand": 13.007159904534607, "walk_once": 75.17899761336515}, "variants": {"expand": {"recall": [51.275, 61.8, 67.15, 71.825], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-17.425, -19.025, -15.899375000000004]}, "context": {"coverage": [3.262955854126679, 5.950095969289827, 12.284069097888676, 25.719769673704413, 40.69097888675624, 52.5911708253359, 66.98656429942419], "median_tokens": 1787.0}}, "walk_once": {"recall": [51.275, 61.8, 81.375, 89.325], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [0.075, -0.175, 0.325]}, "context": {"coverage": [3.262955854126679, 5.950095969289827, 13.24376199616123, 37.04414587332054, 63.14779270633397, 86.56429942418427, 95.20153550863724], "median_tokens": 699.0}}}}}, "embed_seconds": {"passages": 31.9, "facts": 35.6}, "stats": {"passages": 6119, "unique_facts": 50674, "entities": 52552, "entity_entity_edges": 48799, "entity_passage_links": 77642, "titles": 5987, "title_links": 9507}, "storage_bytes": {"flat": 12122272, "triples": 80954103, "triple_graph": 82468784, "id_links": 12308821, "wiki_links": 13165511, "wiki_graph": 95212192}, "storage_bytes_int8_vectors": {"flat": 5073184, "triples": 22577655, "triple_graph": 24092336, "id_links": 5259733, "wiki_links": 6116423, "wiki_graph": 29786656}, "storage_components": {"passage text": 2723488, "passage vectors": 9398784, "fact text": 2306871, "fact vectors": 77835264, "fact provenance + endpoints": 811968, "entity names": 929093, "entity-entity edges": 585588, "entity-passage links": 621136, "NER entity names": 577615, "NER entity-passage links": 465624, "title index": 110493, "title links": 76056}, "llm_calls_to_build": {"flat": 0, "triples": 12238, "triple_graph": 12238, "id_links": 0, "wiki_links": 6119, "wiki_graph": 12238}, "openie_tokens_estimate": {"input": 5285393.75, "output": 1002897.5}}, "musique": {"recall": {"flat": [37.27499999999997, 49.275000000000034, 57.099999999999945, 64.44166666666656], "triples": [34.51666666666663, 45.991666666666674, 53.69166666666668, 61.866666666666596], "triple_graph": [34.36666666666661, 46.75, 53.08333333333336, 58.50833333333338], "id_links": [33.04166666666659, 49.275000000000034, 58.608333333333285, 63.48333333333327], "wiki_links": [33.974999999999945, 49.275000000000034, 60.84166666666666, 68.54166666666667], "wiki_graph": [34.66666666666662, 51.27500000000001, 64.10833333333332, 72.59166666666657]}, "paired_diff_ci95": {"wiki_graph - flat": {"R@5": [1.9999999999999998, 0.2166666666666665, 3.8], "R@20": [8.15, 6.691458333333333, 9.483749999999997]}, "wiki_graph - triple_graph": {"R@5": [4.525, 3.308125, 5.816666666666666], "R@20": [14.083333333333334, 12.332916666666666, 15.884166666666662]}, "wiki_graph - wiki_links": {"R@5": [1.9999999999999998, 0.18312499999999982, 3.8502083333333323], "R@20": [4.05, 2.5414583333333334, 5.625]}, "wiki_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [4.1, 2.183125, 5.858333333333333]}, "id_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.9583333333333335, -2.6835416666666667, 0.7083333333333333]}, "wiki_links - id_links": {"R@5": [0.0, 0.0, 0.0], "R@20": [5.058333333333333, 3.5829166666666663, 6.474999999999999]}, "triples - flat": {"R@5": [-3.2833333333333337, -4.658333333333334, -1.7247916666666678], "R@20": [-2.575, -3.942291666666666, -1.1831250000000013]}, "triple_graph - flat": {"R@5": [-2.525, -4.375416666666666, -0.6166666666666673], "R@20": [-5.933333333333334, -8.1, -3.8]}}, "context": {"eligible_questions": 977, "methods": {"facts": {"coverage": [11.463664278403275, 19.447287615148415, 26.40736949846469, 31.218014329580345, 36.438075742067554, 42.57932446264074, 49.437052200614126], "median_tokens": null}, "flat": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 40.73694984646878, 48.41351074718526, 56.192425793244624, 65.91606960081884], "median_tokens": 1273.0}, "id_links": {"coverage": [9.416581371545547, 15.660184237461616, 26.919140225179124, 40.02047082906858, 52.40532241555783, 57.932446264073704, 62.333674513817805], "median_tokens": 805.0}, "wiki_links": {"coverage": [10.542476970317297, 16.786079836233366, 26.202661207778917, 43.091095189355165, 56.09007164790174, 63.66427840327533, 72.36438075742068], "median_tokens": 706.0}, "wiki_graph": {"coverage": [11.361310133060389, 18.219037871033777, 30.194472876151483, 40.634595701125896, 52.50767656090072, 65.81371545547596, 74.82088024564995], "median_tokens": 896.0}}}, "structure": {"id_links": {"identifiers": 9738, "mentions_per_unit": 1.3660775566231984, "units_sharing_an_identifier": 76.52711050102951, "links_on_top_1pct_identifiers": 38.78953158855438, "max_identifier_degree": 1446, "gold_pairs": {"same home": 1.949634443541836, "direct reference": 18.887083671811535, "shared identifier": 14.581640942323315, "not linked": 64.58164094232332}, "dense_foothold": 90.6, "missed_gold_units": 1015, "missed_one_hop_from_a_seed": 48.57142857142857, "missed_recovered": {"walk": 21.47783251231527, "expand": 11.330049261083744, "walk_once": 22.857142857142858}, "variants": {"expand": {"recall": [37.27499999999997, 49.275000000000034, 57.433333333333316, 63.04166666666664], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.44166666666666665, -1.75, 0.8749999999999999]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 40.941658137154555, 49.33469805527124, 57.727737973387924, 64.27840327533265], "median_tokens": 1080.0}}, "walk_once": {"recall": [37.27499999999997, 49.275000000000034, 60.308333333333294, 64.53333333333327], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [1.05, 0.6, 1.5166666666666666]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 42.8863868986694, 53.428863868986696, 59.365404298874104, 63.050153531218015], "median_tokens": 750.0}}}}, "wiki_links": {"identifiers": 64903, "mentions_per_unit": 9.62079615648593, "units_sharing_an_identifier": 97.81228551818806, "links_on_top_1pct_identifiers": 27.54770815372467, "max_identifier_degree": 1148, "gold_pairs": {"same home": 0.0, "direct reference": 0.0, "shared identifier": 64.09423233143785, "not linked": 35.90576766856214}, "dense_foothold": 90.6, "missed_gold_units": 1015, "missed_one_hop_from_a_seed": 72.21674876847291, "missed_recovered": {"walk": 29.458128078817733, "expand": 12.118226600985222, "walk_once": 29.458128078817733}, "variants": {"expand": {"recall": [37.27499999999997, 49.275000000000034, 59.19166666666662, 66.7583333333333], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-1.7833333333333334, -3.491666666666667, -0.01645833333333477]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 41.14636642784033, 51.381780962128964, 61.00307062436029, 69.39611054247698], "median_tokens": 908.0}}, "walk_once": {"recall": [37.27499999999997, 49.275000000000034, 61.15833333333333, 68.40833333333335], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.13333333333333328, -0.5083333333333333, 0.25000000000000006]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 44.01228249744115, 56.70419651995906, 63.66427840327533, 71.85261003070624], "median_tokens": 643.0}}}}}, "embed_seconds": {"passages": 78.1, "facts": 74.9}, "stats": {"passages": 11656, "unique_facts": 107451, "entities": 105785, "entity_entity_edges": 103315, "entity_passage_links": 161672, "titles": 9738, "title_links": 27510}, "storage_bytes": {"flat": 23788384, "triples": 171686015, "triple_graph": 174862132, "id_links": 24182011, "wiki_links": 25629199, "wiki_graph": 199943892}, "storage_bytes_int8_vectors": {"flat": 10360672, "triples": 47902463, "triple_graph": 51078580, "id_links": 10754299, "wiki_links": 12201487, "wiki_graph": 62732628}, "storage_components": {"passage text": 5884768, "passage vectors": 17903616, "fact text": 4910631, "fact vectors": 165044736, "fact provenance + endpoints": 1730648, "entity names": 1936337, "entity-entity edges": 1239780, "entity-passage links": 1293376, "NER entity names": 943695, "NER entity-passage links": 897120, "title index": 173547, "title links": 220080}, "llm_calls_to_build": {"flat": 0, "triples": 23312, "triple_graph": 23312, "id_links": 0, "wiki_links": 11656, "wiki_graph": 23312}, "openie_tokens_estimate": {"input": 10399887.0, "output": 2069415.75}}, "musique extractors": {"gpt-3.5-turbo": {"recall": {"flat": [37.27499999999997, 49.275000000000034, 57.099999999999945, 64.44166666666656], "triples": [34.51666666666663, 45.991666666666674, 53.69166666666668, 61.866666666666596], "triple_graph": [34.36666666666661, 46.75, 53.08333333333336, 58.50833333333338], "id_links": [33.04166666666659, 49.275000000000034, 58.608333333333285, 63.48333333333327], "wiki_links": [33.974999999999945, 49.275000000000034, 60.84166666666666, 68.54166666666667], "wiki_graph": [34.66666666666662, 51.27500000000001, 64.10833333333332, 72.59166666666657]}, "paired_diff_ci95": {"wiki_graph - flat": {"R@5": [1.9999999999999998, 0.2166666666666665, 3.8], "R@20": [8.15, 6.691458333333333, 9.483749999999997]}, "wiki_graph - triple_graph": {"R@5": [4.525, 3.308125, 5.816666666666666], "R@20": [14.083333333333334, 12.332916666666666, 15.884166666666662]}, "wiki_graph - wiki_links": {"R@5": [1.9999999999999998, 0.18312499999999982, 3.8502083333333323], "R@20": [4.05, 2.5414583333333334, 5.625]}, "wiki_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [4.1, 2.183125, 5.858333333333333]}, "id_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.9583333333333335, -2.6835416666666667, 0.7083333333333333]}, "wiki_links - id_links": {"R@5": [0.0, 0.0, 0.0], "R@20": [5.058333333333333, 3.5829166666666663, 6.474999999999999]}, "triples - flat": {"R@5": [-3.2833333333333337, -4.658333333333334, -1.7247916666666678], "R@20": [-2.575, -3.942291666666666, -1.1831250000000013]}, "triple_graph - flat": {"R@5": [-2.525, -4.375416666666666, -0.6166666666666673], "R@20": [-5.933333333333334, -8.1, -3.8]}}, "context": {"eligible_questions": 977, "methods": {"facts": {"coverage": [11.463664278403275, 19.447287615148415, 26.40736949846469, 31.218014329580345, 36.438075742067554, 42.57932446264074, 49.437052200614126], "median_tokens": null}, "flat": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 40.73694984646878, 48.41351074718526, 56.192425793244624, 65.91606960081884], "median_tokens": 1273.0}, "id_links": {"coverage": [9.416581371545547, 15.660184237461616, 26.919140225179124, 40.02047082906858, 52.40532241555783, 57.932446264073704, 62.333674513817805], "median_tokens": 805.0}, "wiki_links": {"coverage": [10.542476970317297, 16.786079836233366, 26.202661207778917, 43.091095189355165, 56.09007164790174, 63.66427840327533, 72.36438075742068], "median_tokens": 706.0}, "wiki_graph": {"coverage": [11.361310133060389, 18.219037871033777, 30.194472876151483, 40.634595701125896, 52.50767656090072, 65.81371545547596, 74.82088024564995], "median_tokens": 896.0}}}, "structure": {"id_links": {"identifiers": 9738, "mentions_per_unit": 1.3660775566231984, "units_sharing_an_identifier": 76.52711050102951, "links_on_top_1pct_identifiers": 38.78953158855438, "max_identifier_degree": 1446, "gold_pairs": {"same home": 1.949634443541836, "direct reference": 18.887083671811535, "shared identifier": 14.581640942323315, "not linked": 64.58164094232332}, "dense_foothold": 90.6, "missed_gold_units": 1015, "missed_one_hop_from_a_seed": 48.57142857142857, "missed_recovered": {"walk": 21.47783251231527, "expand": 11.330049261083744, "walk_once": 22.857142857142858}, "variants": {"expand": {"recall": [37.27499999999997, 49.275000000000034, 57.433333333333316, 63.04166666666664], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.44166666666666665, -1.75, 0.8749999999999999]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 40.941658137154555, 49.33469805527124, 57.727737973387924, 64.27840327533265], "median_tokens": 1080.0}}, "walk_once": {"recall": [37.27499999999997, 49.275000000000034, 60.308333333333294, 64.53333333333327], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [1.05, 0.6, 1.5166666666666666]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 42.8863868986694, 53.428863868986696, 59.365404298874104, 63.050153531218015], "median_tokens": 750.0}}}}, "wiki_links": {"identifiers": 64903, "mentions_per_unit": 9.62079615648593, "units_sharing_an_identifier": 97.81228551818806, "links_on_top_1pct_identifiers": 27.54770815372467, "max_identifier_degree": 1148, "gold_pairs": {"same home": 0.0, "direct reference": 0.0, "shared identifier": 64.09423233143785, "not linked": 35.90576766856214}, "dense_foothold": 90.6, "missed_gold_units": 1015, "missed_one_hop_from_a_seed": 72.21674876847291, "missed_recovered": {"walk": 29.458128078817733, "expand": 12.118226600985222, "walk_once": 29.458128078817733}, "variants": {"expand": {"recall": [37.27499999999997, 49.275000000000034, 59.19166666666662, 66.7583333333333], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-1.7833333333333334, -3.491666666666667, -0.01645833333333477]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 41.14636642784033, 51.381780962128964, 61.00307062436029, 69.39611054247698], "median_tokens": 908.0}}, "walk_once": {"recall": [37.27499999999997, 49.275000000000034, 61.15833333333333, 68.40833333333335], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.13333333333333328, -0.5083333333333333, 0.25000000000000006]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 44.01228249744115, 56.70419651995906, 63.66427840327533, 71.85261003070624], "median_tokens": 643.0}}}}}, "embed_seconds": {"passages": 78.1, "facts": 74.9}, "stats": {"passages": 11656, "unique_facts": 107451, "entities": 105785, "entity_entity_edges": 103315, "entity_passage_links": 161672, "titles": 9738, "title_links": 27510}, "storage_bytes": {"flat": 23788384, "triples": 171686015, "triple_graph": 174862132, "id_links": 24182011, "wiki_links": 25629199, "wiki_graph": 199943892}, "storage_bytes_int8_vectors": {"flat": 10360672, "triples": 47902463, "triple_graph": 51078580, "id_links": 10754299, "wiki_links": 12201487, "wiki_graph": 62732628}, "storage_components": {"passage text": 5884768, "passage vectors": 17903616, "fact text": 4910631, "fact vectors": 165044736, "fact provenance + endpoints": 1730648, "entity names": 1936337, "entity-entity edges": 1239780, "entity-passage links": 1293376, "NER entity names": 943695, "NER entity-passage links": 897120, "title index": 173547, "title links": 220080}, "llm_calls_to_build": {"flat": 0, "triples": 23312, "triple_graph": 23312, "id_links": 0, "wiki_links": 11656, "wiki_graph": 23312}, "openie_tokens_estimate": {"input": 10399887.0, "output": 2069415.75}}, "gpt-4o-mini": {"recall": {"flat": [37.27499999999997, 49.275000000000034, 57.099999999999945, 64.44166666666656], "triples": [35.39999999999995, 46.30833333333337, 54.42499999999999, 62.30833333333329], "triple_graph": [34.56666666666661, 48.400000000000034, 55.19166666666673, 61.75000000000005], "id_links": [33.04166666666659, 49.275000000000034, 58.608333333333285, 63.48333333333327], "wiki_links": [34.366666666666596, 49.275000000000034, 58.68333333333335, 65.50833333333331], "wiki_graph": [33.7166666666666, 51.40000000000005, 62.89999999999998, 72.05833333333328]}, "paired_diff_ci95": {"wiki_graph - flat": {"R@5": [2.125, 0.5912499999999998, 3.825], "R@20": [7.616666666666666, 6.333125000000001, 8.891666666666666]}, "wiki_graph - triple_graph": {"R@5": [3.0, 1.8333333333333335, 4.25], "R@20": [10.308333333333334, 8.508333333333335, 12.15]}, "wiki_graph - wiki_links": {"R@5": [2.125, 0.4747916666666663, 3.775], "R@20": [6.55, 4.941250000000001, 8.158749999999998]}, "wiki_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [1.066666666666666, -0.6666666666666664, 2.758333333333333]}, "id_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.9583333333333335, -2.616875, 0.8418749999999989]}, "wiki_links - id_links": {"R@5": [0.0, 0.0, 0.0], "R@20": [2.025, 0.5414583333333332, 3.55895833333333]}, "triples - flat": {"R@5": [-2.966666666666667, -4.450208333333333, -1.516666666666667], "R@20": [-2.133333333333333, -3.483541666666666, -0.8997916666666677]}, "triple_graph - flat": {"R@5": [-0.8750000000000002, -2.766875, 0.9416666666666663], "R@20": [-2.691666666666667, -4.883333333333333, -0.5245833333333356]}}, "context": {"eligible_questions": 977, "methods": {"facts": {"coverage": [11.87308085977482, 17.809621289662232, 23.643807574206754, 30.808597748208804, 37.05220061412487, 43.90992835209826, 50.76765609007165], "median_tokens": 3783.0}, "flat": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 40.73694984646878, 48.41351074718526, 56.192425793244624, 65.91606960081884], "median_tokens": 1273.0}, "id_links": {"coverage": [9.416581371545547, 15.660184237461616, 26.919140225179124, 40.02047082906858, 52.40532241555783, 57.932446264073704, 62.333674513817805], "median_tokens": 805.0}, "wiki_links": {"coverage": [9.621289662231321, 15.660184237461616, 26.40736949846469, 41.14636642784033, 53.735926305015354, 61.10542476970318, 67.96315250767655], "median_tokens": 779.0}, "wiki_graph": {"coverage": [9.416581371545547, 15.353121801432959, 28.147389969293755, 40.122824974411465, 55.57830092118731, 68.06550665301944, 75.9467758444217], "median_tokens": 785.0}}}, "structure": {"id_links": {"identifiers": 9738, "mentions_per_unit": 1.3660775566231984, "units_sharing_an_identifier": 76.52711050102951, "links_on_top_1pct_identifiers": 38.78953158855438, "max_identifier_degree": 1446, "gold_pairs": {"same home": 1.949634443541836, "direct reference": 18.887083671811535, "shared identifier": 14.581640942323315, "not linked": 64.58164094232332}, "dense_foothold": 90.6, "missed_gold_units": 1015, "missed_one_hop_from_a_seed": 48.57142857142857, "missed_recovered": {"walk": 21.47783251231527, "expand": 11.330049261083744, "walk_once": 22.857142857142858}, "variants": {"expand": {"recall": [37.27499999999997, 49.275000000000034, 57.433333333333316, 63.04166666666664], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.44166666666666665, -1.75, 0.8749999999999999]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 40.941658137154555, 49.33469805527124, 57.727737973387924, 64.27840327533265], "median_tokens": 1080.0}}, "walk_once": {"recall": [37.27499999999997, 49.275000000000034, 60.308333333333294, 64.53333333333327], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [1.05, 0.6, 1.5166666666666666]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 42.8863868986694, 53.428863868986696, 59.365404298874104, 63.050153531218015], "median_tokens": 750.0}}}}, "wiki_links": {"identifiers": 66155, "mentions_per_unit": 9.947237474262183, "units_sharing_an_identifier": 98.19835277968428, "links_on_top_1pct_identifiers": 28.8826584815979, "max_identifier_degree": 1175, "gold_pairs": {"same home": 0.0, "direct reference": 0.0, "shared identifier": 56.78310316815597, "not linked": 43.21689683184403}, "dense_foothold": 90.6, "missed_gold_units": 1015, "missed_one_hop_from_a_seed": 64.03940886699507, "missed_recovered": {"walk": 25.517241379310345, "expand": 12.019704433497537, "walk_once": 25.320197044334975}, "variants": {"expand": {"recall": [37.27499999999997, 49.275000000000034, 58.7166666666666, 65.72499999999991], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [0.21666666666666673, -1.333333333333333, 1.7002083333333322]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 41.453428863868986, 50.66530194472876, 59.97952917093142, 67.55373592630501], "median_tokens": 936.0}}, "walk_once": {"recall": [37.27499999999997, 49.275000000000034, 58.608333333333334, 65.4333333333333], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.07499999999999997, -0.44166666666666665, 0.3]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 42.784032753326514, 53.83828045035825, 60.593654042988746, 67.6560900716479], "median_tokens": 762.0}}}}}, "embed_seconds": {"passages": 78.1, "facts": 86.0}, "stats": {"passages": 11656, "unique_facts": 125882, "entities": 107471, "entity_entity_edges": 120575, "entity_passage_links": 189114, "titles": 9738, "title_links": 27510}, "storage_bytes": {"flat": 23788384, "triples": 201053398, "triple_graph": 204374860, "id_links": 24182011, "wiki_links": 25675095, "wiki_graph": 229676156}, "storage_bytes_int8_vectors": {"flat": 10360672, "triples": 56037334, "triple_graph": 59358796, "id_links": 10754299, "wiki_links": 12247383, "wiki_graph": 71232380}, "storage_components": {"passage text": 5884768, "passage vectors": 17903616, "fact text": 5671478, "fact vectors": 193354752, "fact provenance + endpoints": 2027168, "entity names": 1874562, "entity-entity edges": 1446900, "entity-passage links": 1512912, "NER entity names": 959151, "NER entity-passage links": 927560, "title index": 173547, "title links": 220080}, "llm_calls_to_build": {"flat": 0, "triples": 23312, "triple_graph": 23312, "id_links": 0, "wiki_links": 11656, "wiki_graph": 23312}, "openie_tokens_estimate": {"input": 10411645.25, "output": 2310854.0}}, "llama-3.3-70b": {"recall": {"flat": [37.27499999999997, 49.275000000000034, 57.099999999999945, 64.44166666666656], "triples": [34.699999999999974, 45.38333333333335, 53.725, 61.933333333333266], "triple_graph": [34.799999999999955, 48.47500000000003, 56.55000000000001, 63.40833333333333], "id_links": [33.04166666666659, 49.275000000000034, 58.608333333333285, 63.48333333333327], "wiki_links": [34.341666666666605, 49.275000000000034, 61.258333333333354, 70.17499999999997], "wiki_graph": [35.01666666666662, 52.75833333333338, 64.82499999999999, 73.32499999999997]}, "paired_diff_ci95": {"wiki_graph - flat": {"R@5": [3.483333333333333, 1.8581249999999996, 5.125], "R@20": [8.883333333333335, 7.6, 10.191874999999998]}, "wiki_graph - triple_graph": {"R@5": [4.283333333333334, 2.9831250000000002, 5.558333333333333], "R@20": [9.916666666666666, 8.233333333333334, 11.633333333333333]}, "wiki_graph - wiki_links": {"R@5": [3.483333333333333, 1.8416666666666668, 5.166874999999998], "R@20": [3.15, 1.5666666666666667, 4.658333333333334]}, "wiki_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [5.733333333333333, 3.9416666666666664, 7.591666666666667]}, "id_links - flat": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.9583333333333335, -2.6168750000000003, 0.6916666666666668]}, "wiki_links - id_links": {"R@5": [0.0, 0.0, 0.0], "R@20": [6.691666666666666, 5.333125, 8.175208333333332]}, "triples - flat": {"R@5": [-3.891666666666667, -5.375208333333333, -2.3581250000000016], "R@20": [-2.508333333333333, -3.875, -1.1333333333333335]}, "triple_graph - flat": {"R@5": [-0.8000000000000004, -2.7583333333333337, 1.1499999999999995], "R@20": [-1.0333333333333337, -3.2920833333333337, 1.2916666666666663]}}, "context": {"eligible_questions": 977, "methods": {"facts": {"coverage": [9.621289662231321, 15.967246673490276, 21.8014329580348, 27.43091095189355, 32.650972364380756, 39.099283520982596, 46.87819856704197], "median_tokens": null}, "flat": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 40.73694984646878, 48.41351074718526, 56.192425793244624, 65.91606960081884], "median_tokens": 1273.0}, "id_links": {"coverage": [9.416581371545547, 15.660184237461616, 26.919140225179124, 40.02047082906858, 52.40532241555783, 57.932446264073704, 62.333674513817805], "median_tokens": 805.0}, "wiki_links": {"coverage": [10.133060388945752, 16.68372569089048, 27.328556806550665, 42.272262026612076, 57.01125895598772, 65.4042988741044, 73.59263050153531], "median_tokens": 679.0}, "wiki_graph": {"coverage": [9.621289662231321, 15.455475946775845, 28.761514841351076, 43.091095189355165, 55.68065506653019, 67.34902763561924, 75.9467758444217], "median_tokens": 758.0}}}, "structure": {"id_links": {"identifiers": 9738, "mentions_per_unit": 1.3660775566231984, "units_sharing_an_identifier": 76.52711050102951, "links_on_top_1pct_identifiers": 38.78953158855438, "max_identifier_degree": 1446, "gold_pairs": {"same home": 1.949634443541836, "direct reference": 18.887083671811535, "shared identifier": 14.581640942323315, "not linked": 64.58164094232332}, "dense_foothold": 90.6, "missed_gold_units": 1015, "missed_one_hop_from_a_seed": 48.57142857142857, "missed_recovered": {"walk": 21.47783251231527, "expand": 11.330049261083744, "walk_once": 22.857142857142858}, "variants": {"expand": {"recall": [37.27499999999997, 49.275000000000034, 57.433333333333316, 63.04166666666664], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-0.44166666666666665, -1.75, 0.8749999999999999]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 40.941658137154555, 49.33469805527124, 57.727737973387924, 64.27840327533265], "median_tokens": 1080.0}}, "walk_once": {"recall": [37.27499999999997, 49.275000000000034, 60.308333333333294, 64.53333333333327], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [1.05, 0.6, 1.5166666666666666]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 42.8863868986694, 53.428863868986696, 59.365404298874104, 63.050153531218015], "median_tokens": 750.0}}}}, "wiki_links": {"identifiers": 57966, "mentions_per_unit": 8.50506177076184, "units_sharing_an_identifier": 96.85140700068634, "links_on_top_1pct_identifiers": 26.516366004943848, "max_identifier_degree": 1282, "gold_pairs": {"same home": 0.0, "direct reference": 0.0, "shared identifier": 66.97806661251015, "not linked": 33.021933387489845}, "dense_foothold": 90.6, "missed_gold_units": 1015, "missed_one_hop_from_a_seed": 73.79310344827586, "missed_recovered": {"walk": 33.793103448275865, "expand": 14.088669950738916, "walk_once": 34.1871921182266}, "variants": {"expand": {"recall": [37.216666666666626, 49.275000000000034, 59.358333333333306, 67.62499999999996], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [-2.55, -4.216666666666667, -0.8910416666666701]}, "context": {"coverage": [12.18014329580348, 19.447287615148415, 30.092118730808597, 41.04401228249744, 51.893551688843395, 61.20777891504606, 70.93142272262027], "median_tokens": 937.0}}, "walk_once": {"recall": [37.27499999999997, 49.275000000000034, 61.72500000000002, 70.39166666666665], "minus_walk_ci95": {"R@5": [0.0, 0.0, 0.0], "R@20": [0.21666666666666662, -0.225, 0.65]}, "context": {"coverage": [12.18014329580348, 19.549641760491298, 30.194472876151483, 44.21699078812692, 56.80655066530195, 65.19959058341863, 73.18321392016377], "median_tokens": 636.0}}}}}, "embed_seconds": {"passages": 78.1, "facts": 90.1}, "stats": {"passages": 11656, "unique_facts": 140767, "entities": 86919, "entity_entity_edges": 124307, "entity_passage_links": 138988, "titles": 9738, "title_links": 27510}, "storage_bytes": {"flat": 23788384, "triples": 224426924, "triple_graph": 227302170, "id_links": 24182011, "wiki_links": 25437049, "wiki_graph": 252202458}, "storage_bytes_int8_vectors": {"flat": 10360672, "triples": 62263340, "triple_graph": 65138586, "id_links": 10754299, "wiki_links": 12009337, "wiki_graph": 76611162}, "storage_components": {"passage text": 5884768, "passage vectors": 17903616, "fact text": 5927612, "fact vectors": 216218112, "fact provenance + endpoints": 2281200, "entity names": 1383562, "entity-entity edges": 1491684, "entity-passage links": 1111904, "NER entity names": 855585, "NER entity-passage links": 793080, "title index": 173547, "title links": 220080}, "llm_calls_to_build": {"flat": 0, "triples": 23312, "triple_graph": 23312, "id_links": 0, "wiki_links": 11656, "wiki_graph": 23312}, "openie_tokens_estimate": {"input": 10354611.5, "output": 2388471.5}}}}, "settings": {"ks": [2, 5, 10, 20], "budgets": [64, 128, 256, 512, 1024, 2048, 4096], "methods": ["flat", "triples", "triple_graph", "id_links", "wiki_links", "wiki_graph"], "context_methods": ["facts", "flat", "id_links", "wiki_links", "wiki_graph"]}, "meta": {"date": "2026-10-12", "platform": "Windows AMD64, Python 3.11.15", "versions": {"numpy": "2.4.6", "scipy": "1.17.1", "torch": "2.14.0", "sentence-transformers": "6.1.0"}, "model": "sentence-transformers/all-MiniLM-L6-v2@1110a24", "seconds": 430}};
+
+const DATASETS = ["hotpotqa", "2wikimultihopqa", "musique"];
+const DNAME = { hotpotqa: "HotpotQA", "2wikimultihopqa": "2Wiki", musique: "MuSiQue" };
+const KS = [2, 5, 10, 20];
+// Colour follows the representation on every chart; triples and facts share one hue because they are one store.
+const META = {
+  flat: { name: "Flat passages", short: "Flat", cls: "flat", stored: "Passage text, one vector per passage" },
+  triples: { name: "Triples", short: "Triples", cls: "facts", stored: "LLM-extracted facts, one vector per fact" },
+  facts: { name: "Facts", short: "Facts", cls: "facts", stored: "Top facts as the context" },
+  triple_graph: { name: "Triple graph", short: "Triple graph", cls: "tg", stored: "Facts + entity graph (the paper's “Ordinary graph”)" },
+  id_links: { name: "Title links", short: "Title links", cls: "id", stored: "Passages + links to page titles they name (no LLM)" },
+  wiki_links: { name: "NER links", short: "NER links", cls: "ner", stored: "Passages + links to LLM-extracted entities" },
+  wiki_graph: { name: "Wiki graph", short: "Wiki graph", cls: "wiki", stored: "Passages + entities + facts + all links" },
+};
+const LLM_PER_PASSAGE = { flat: 0, triples: 2, triple_graph: 2, id_links: 0, wiki_links: 1, wiki_graph: 2 };
+
+const $ = (sel) => document.querySelector(sel);
+const NS = "http://www.w3.org/2000/svg";
+function h(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v;
+    else if (k === "text") e.textContent = v;
+    else e.setAttribute(k, v);
+  }
+  for (const kid of kids) e.append(kid);
+  return e;
+}
+function s(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+  if (parent) parent.append(e);
+  return e;
+}
+function text(parent, x, y, str, cls, anchor = "start") {
+  const t = s("text", { x, y, class: cls, "text-anchor": anchor }, parent);
+  t.textContent = str;
+  return t;
+}
+const mean = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
+const f1 = (x) => x.toFixed(1);
+const f2 = (x) => x.toFixed(2);
+const signed = (x, d = 1) => (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(d);
+const mult = (x) => (x < 1.95 ? x.toFixed(2) : x.toFixed(1)) + "×";
+const tokens = (n) => n.toLocaleString("en-US");
+const medianText = (x) => (x === null ? `>${tokens(4096)}` : tokens(Math.round(x)));
+const list3 = (xs) => `${xs[0]}, ${xs[1]} and ${xs[2]}`;
+
+/* Tooltip: one floating readout, built with textContent. */
+const tip = h("div", { class: "tip", role: "status" });
+tip.hidden = true;
+document.body.append(tip);
+function showTip(evt, title, rows) {
+  tip.replaceChildren(h("div", { class: "tip-title", text: title }));
+  for (const r of rows) {
+    const key = h("i", { class: "tip-key" + (r.cls ? ` fill-${r.cls}` : "") });
+    tip.append(h("div", { class: "tip-row" }, key, h("strong", { text: r.value }), h("span", { text: r.label })));
+  }
+  tip.hidden = false;
+  const box = tip.getBoundingClientRect();
+  let x = evt.clientX + 14, y = evt.clientY + 14;
+  if (x + box.width > innerWidth - 8) x = evt.clientX - box.width - 14;
+  if (y + box.height > innerHeight - 8) y = evt.clientY - box.height - 14;
+  tip.style.left = Math.max(8, x) + "px";
+  tip.style.top = Math.max(8, y) + "px";
+}
+const hideTip = () => { tip.hidden = true; };
+function hover(target, fn) {
+  target.addEventListener("pointermove", (e) => fn(e));
+  target.addEventListener("pointerleave", hideTip);
+  target.addEventListener("focus", () => { const b = target.getBoundingClientRect(); fn({ clientX: b.left + b.width / 2, clientY: b.top + b.height / 2 }); });
+  target.addEventListener("blur", hideTip);
+}
+
+function segmented(container, options, value, onChange) {
+  container.replaceChildren();
+  for (const [key, label] of options) {
+    const b = h("button", { type: "button", "aria-pressed": String(key === value), text: label });
+    b.addEventListener("click", () => {
+      for (const other of container.children) other.setAttribute("aria-pressed", String(other === b));
+      onChange(key);
+    });
+    container.append(b);
+  }
+}
+
+function table(headers, rows) {
+  const thead = h("thead", {}, h("tr", {}, ...headers.map((c, i) => h("th", { class: i === 0 ? "left" : "", text: c }))));
+  const tbody = h("tbody");
+  for (const row of rows) {
+    const tr = h("tr");
+    row.forEach((cell, i) => {
+      const td = i === 0 ? h("th", { scope: "row" }) : h("td");
+      if (cell && typeof cell === "object") {
+        if (cell.cls) td.append(h("i", { class: `key fill-${cell.cls}` }));
+        td.append(document.createTextNode(cell.text));
+        if (cell.best) td.classList.add("best");
+      } else td.textContent = cell;
+      tr.append(td);
+    });
+    tbody.append(tr);
+  }
+  return h("table", {}, thead, tbody);
+}
+
+/* ---------- derived values ---------- */
+const paperRows = () => R.audit.tables["tab:multihop-recall"];
+const paperR20 = (row, i) => paperRows()[row][4 * i + 3];
+const lab2 = (d) => R.lab2[d];
+const r20 = (d, m) => lab2(d).recall[m][3];
+const storageX = (d, m, key = "storage_bytes") => lab2(d)[key][m] / lab2(d)[key].flat;
+const avgOver = (fn) => mean(DATASETS.map(fn));
+const ci = (d, name, k = "R@20") => lab2(d).paired_diff_ci95[name][k];
+
+function values() {
+  const v = {};
+  const gaps = DATASETS.flatMap((d) => R.lab1[d].variants["title+text fp32"].gaps);
+  v.gapRange = `${Math.round(Math.min(...gaps))}–${Math.round(Math.max(...gaps))}`;
+  const whole = DATASETS.filter((d) => R.lab1[d].variants["title+text fp32"].whole_numbers);
+  v.wholeSets = whole.map((d) => DNAME[d]).join(" and ");
+  v.wholeCells = 4 * whole.length;
+  const g0 = whole.length ? R.lab1[whole[0]].variants["title+text fp32"].gaps.map(Math.round) : [];
+  v.wholeGaps = g0.length ? `${g0.slice(0, -1).join(", ")} and ${g0[g0.length - 1]}` : "";
+  v.flatR20 = list3(DATASETS.map((d) => f1(R.lab1[d].variants["title+text fp32"].recall[3])));
+  v.paperR20 = list3(DATASETS.map((d) => f1(R.lab1[d].paper_native_rag[3])));
+  v.admission = `“${R.audit.admission}”`;
+  v.ablation = f1(avgOver((d) => r20(d, "wiki_graph")) - avgOver((d) => r20(d, "triple_graph")));
+  v.idAvg = `${f1(avgOver((d) => r20(d, "id_links")))} average Recall@20 (flat: ${f1(avgOver((d) => r20(d, "flat")))})`;
+  v.idStorage = mult(avgOver((d) => storageX(d, "id_links")));
+  const idGain = DATASETS.map((d) => signed(ci(d, "id_links - flat")[0]));
+  v.idMusique = signed(ci("musique", "id_links - flat")[0]);
+  v.appId = `Measured: title links change Recall@20 by ${list3(idGain)} points against flat retrieval on HotpotQA, 2Wiki and MuSiQue, at ${v.idStorage} flat storage and zero LLM calls to build. They help where documents name each other, as wiki pages and cross-referenced documents do, and not on MuSiQue, where they don't.`;
+  return v;
+}
+
+function budgetFacts(d) {
+  const B = R.settings.budgets;
+  const C = lab2(d).context.methods;
+  const passageMethods = ["flat", "id_links", "wiki_links", "wiki_graph"];
+  const bestPassage = B.map((_, i) => Math.max(...passageMethods.map((m) => C[m].coverage[i])));
+  return { B, C, bestPassage };
+}
+
+/* ---------- header, ledger ---------- */
+function renderMeta() {
+  const m = R.meta;
+  const items = [`Run ${m.date}`, `${Math.round(m.seconds / 60)} min on ${m.platform}`, `Model ${m.model}`, `3 × 1,000 questions`];
+  $("#meta").replaceChildren(...items.map((t) => h("span", { text: t })));
+  $("#footer-meta").textContent = `Versions: ${Object.entries(m.versions).map(([k, v]) => `${k} ${v}`).join(", ")}.`;
+}
+
+function renderLedger() {
+  const wfmAvg = mean([0, 1, 2].map((i) => paperR20("WFM", i)));
+  const wikiAvg = avgOver((d) => r20(d, "wiki_graph"));
+  const claimed = DATASETS.map((d, i) => paperR20("WFM", i) - paperR20("Native RAG", i));
+  const measured = DATASETS.map((d) => ci(d, "wiki_graph - flat")[0]);
+  const ratios = measured.map((x, i) => x / claimed[i]);
+  const v = values();
+  const rows = [
+    {
+      paper: "A wiki graph (passages plus entity topology) retrieves better than a sparse triple graph; removing passage nodes costs 7.48 points of average Recall@20.",
+      ours: `Adding passage nodes and entity links to the triple graph gains ${v.ablation} points of average Recall@20, with a training-free walk. It holds for all three extraction LLMs we tried.`,
+      verdict: ["good", "✓", "Confirmed"],
+    },
+    {
+      paper: `Wiki-based retrieval beats flat RAG by ${list3(claimed.map(f1))} Recall@20 points on HotpotQA, 2Wiki and MuSiQue (WFM vs Native RAG).`,
+      ours: `Against a correctly measured flat baseline, the wiki graph gains ${list3(measured.map(f1))} points: real and significant, but ${Math.round(100 * Math.min(...ratios))}–${Math.round(100 * Math.max(...ratios))}% of the printed margin.`,
+      verdict: ["warn", "!", "Overstated"],
+    },
+    {
+      paper: `Native RAG with all-MiniLM-L6-v2 reaches Recall@20 of ${list3(DATASETS.map((d) => f1(R.lab1[d].paper_native_rag[3])))}.`,
+      ours: `We measure ${v.flatR20}. On ${v.wholeSets}, all ${v.wholeCells} published cells equal the measurement minus a whole number.`,
+      verdict: ["bad", "✕", "Not supported"],
+    },
+    {
+      paper: `WFM, a trained graph foundation model, is state of the art at ${f2(wfmAvg)} average Recall@20.`,
+      ours: `A training-free wiki graph built from HippoRAG 2's published recipe reaches ${f2(wikiAvg)}. WFM's own numbers cannot be checked: no code or weights.`,
+      verdict: ["na", "–", "Unverified"],
+    },
+    {
+      paper: "Attention-variance regularization prevents attention collapse; NCCL boundary exchange trains 10.5× faster.",
+      ours: "Not tested. Both need the authors' model code; the speedup also needs a multi-GPU cluster.",
+      verdict: ["na", "–", "Not tested"],
+    },
+  ];
+  $("#ledger").replaceChildren(
+    ...rows.map((r) =>
+      h("div", { class: "claim" },
+        h("div", {}, h("div", { class: "label", text: "The paper" }), h("p", { class: "paper-said", text: r.paper })),
+        h("div", {}, h("div", { class: "label", text: "Measured here" }), h("p", { text: r.ours })),
+        h("div", {}, h("span", { class: `chip ${r.verdict[0]}` }, h("span", { class: "icon", "aria-hidden": "true", text: r.verdict[1] }), h("span", { text: r.verdict[2] })))
+      )
+    )
+  );
+}
+
+/* ---------- Lab 1: dumbbell ---------- */
+function drawDumbbell() {
+  const box = $("#dumbbell");
+  const W = Math.max(300, box.clientWidth);
+  const narrow = W < 560;
+  const labelW = narrow ? 52 : 70, gapW = narrow ? 56 : 70, top = 8, rowH = 26, groupH = 34;
+  const x0 = labelW, x1 = W - gapW - 10;
+  const x = (v) => x0 + (v / 100) * (x1 - x0);
+  let y = top;
+  const rows = [];
+  for (const d of DATASETS) {
+    const v = R.lab1[d].variants["title+text fp32"];
+    rows.push({ header: true, d, y: y + 22, whole: v.whole_numbers });
+    y += groupH;
+    KS.forEach((k, i) => { rows.push({ d, k, paper: R.lab1[d].paper_native_rag[i], ours: v.recall[i], gap: v.gaps[i], y: y + rowH / 2 }); y += rowH; });
+  }
+  const H = y + 34;
+  const svg = s("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Dumbbell chart of the paper's Native RAG recall against our measurement for each dataset and k; the table below lists every value." });
+  for (const t of [0, 20, 40, 60, 80, 100]) {
+    s("line", { x1: x(t), x2: x(t), y1: top, y2: y, class: "grid" }, svg);
+    text(svg, x(t), y + 16, String(t), "tick", "middle");
+  }
+  text(svg, x1, y + 31, "Recall@k (%)", "axis-title", "end");
+  for (const r of rows) {
+    if (r.header) {
+      text(svg, 0, r.y, DNAME[r.d], "group-label");
+      if (r.whole) text(svg, narrow ? 72 : 90, r.y, "every gap a whole number", "group-note");
+      continue;
+    }
+    const g = s("g", {}, svg);
+    s("rect", { x: 0, y: r.y - rowH / 2, width: W, height: rowH, class: "hover-band", opacity: 0 }, g);
+    text(g, labelW - 12, r.y + 4, `R@${r.k}`, "row-label", "end");
+    s("line", { x1: x(r.paper), x2: x(r.ours), y1: r.y, y2: r.y, class: "link" }, g);
+    s("circle", { cx: x(r.paper), cy: r.y, r: 5, class: "fill-paper" }, g);
+    s("circle", { cx: x(r.ours), cy: r.y, r: 5, class: "fill-flat" }, g);
+    text(g, W - 2, r.y + 4, "+" + f2(r.gap), "gap-label", "end");
+    const hit = s("rect", { x: 0, y: r.y - rowH / 2, width: W, height: rowH, class: "hit", tabindex: 0, "aria-label": `${DNAME[r.d]} R@${r.k}: paper ${f2(r.paper)}, measured ${f2(r.ours)}, gap ${f2(r.gap)}` }, g);
+    const band = g.firstChild;
+    hover(hit, (e) => {
+      band.setAttribute("opacity", 1);
+      showTip(e, `${DNAME[r.d]} · Recall@${r.k}`, [
+        { value: f2(r.ours), label: "measured", cls: "flat" },
+        { value: f2(r.paper), label: "paper", cls: "paper" },
+        { value: "+" + f2(r.gap), label: "gap" },
+      ]);
+    });
+    hit.addEventListener("pointerleave", () => band.setAttribute("opacity", 0));
+    hit.addEventListener("blur", () => band.setAttribute("opacity", 0));
+  }
+  box.replaceChildren(svg);
+}
+
+function renderLab1Table() {
+  const rows = [];
+  for (const d of DATASETS) {
+    const L = R.lab1[d];
+    for (const [name, v] of Object.entries(L.variants)) {
+      rows.push([`${DNAME[d]} · ${name}`, v.recall.map(f2).join(" / "), name === "title+text fp32" ? L.paper_native_rag.map(f2).join(" / ") : "", v.gaps.map((g) => signed(g, 3)).join(" / "), v.whole_numbers ? "yes" : "no", `${v.bytes_per_vector} B`]);
+    }
+  }
+  $("#lab1-table").replaceChildren(table(["Dataset · index", "Measured R@2/5/10/20", "Paper", "Gap per k", "Whole numbers", "Per vector"], rows));
+  const v = R.audit.non_monotonic_recall;
+  $("#monotonic-note").textContent = v.length
+    ? `The same table also prints a row that cannot come from one ranked list: ${v.map((x) => `${x.method} on HotpotQA reports Recall@5 ${x.values[1]} and Recall@10 ${x.values[2]}`).join("; ")}. Recall cannot fall as k grows.`
+    : "";
+}
+
+/* ---------- Lab 2: recall vs storage ---------- */
+let lab2Dataset = "all";
+const LAB2_METHODS = ["flat", "triples", "triple_graph", "id_links", "wiki_links", "wiki_graph"];
+function lab2Points(ds) {
+  return LAB2_METHODS.map((m) => {
+    const pick = (fn) => (ds === "all" ? avgOver(fn) : fn(ds));
+    return {
+      m,
+      x: pick((d) => storageX(d, m)),
+      y: pick((d) => r20(d, m)),
+      y5: pick((d) => lab2(d).recall[m][1]),
+      int8: pick((d) => storageX(d, m, "storage_bytes_int8_vectors")),
+      mb: pick((d) => lab2(d).storage_bytes[m] / 1e6),
+    };
+  });
+}
+
+function placeLabels(points, bounds, charW = 6.6, lineH = 14) {
+  const placed = [];
+  const overlaps = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+  for (const p of [...points].sort((a, b) => a.py - b.py)) {
+    const w = p.label.length * charW, hgt = lineH;
+    const options = [
+      { x: p.px + 10, y: p.py - hgt / 2, anchor: "start" },
+      { x: p.px - 10 - w, y: p.py - hgt / 2, anchor: "end" },
+      { x: p.px - w / 2, y: p.py - 12 - hgt, anchor: "middle" },
+      { x: p.px - w / 2, y: p.py + 10, anchor: "middle" },
+    ];
+    let choice = options.find((o) => {
+      const box = { x: o.x, y: o.y, w, h: hgt };
+      const inside = box.x >= bounds.x0 && box.x + w <= bounds.x1 && box.y >= bounds.y0 - 4 && box.y + hgt <= bounds.y1;
+      return inside && !placed.some((q) => overlaps(box, q)) && !points.some((o2) => o2 !== p && overlaps(box, { x: o2.px - 6, y: o2.py - 6, w: 12, h: 12 }));
+    }) || options[0];
+    placed.push({ x: choice.x, y: choice.y, w, h: hgt });
+    p.lx = choice.anchor === "start" ? choice.x : choice.anchor === "end" ? choice.x + w : choice.x + w / 2;
+    p.ly = choice.y + hgt - 3;
+    p.anchor = choice.anchor;
+  }
+}
+
+function drawScatter() {
+  const box = $("#scatter");
+  const W = Math.max(300, box.clientWidth);
+  const narrow = W < 560;
+  const pts = lab2Points(lab2Dataset);
+  const claim = lab2Dataset === "all" ? mean([0, 1, 2].map((i) => paperR20("WFM", i))) : paperR20("WFM", DATASETS.indexOf(lab2Dataset));
+  const ys = [...pts.map((p) => p.y), claim];
+  const yMin = Math.floor((Math.min(...ys) - 3) / 5) * 5, yMax = Math.ceil((Math.max(...ys) + 2) / 5) * 5;
+  const xMin = 0.8, xMax = Math.max(12, Math.max(...pts.map((p) => p.x)) * 1.25);
+  const m = { l: 44, r: narrow ? 12 : 24, t: 16, b: 44 };
+  const H = narrow ? 320 : 380;
+  const X = (v) => m.l + (Math.log(v / xMin) / Math.log(xMax / xMin)) * (W - m.l - m.r);
+  const Y = (v) => H - m.b - ((v - yMin) / (yMax - yMin)) * (H - m.t - m.b);
+  const svg = s("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Scatter of Recall@20 against storage for six representations; the table below lists every value." });
+  for (let v = yMin; v <= yMax; v += 5) {
+    s("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), class: "grid" }, svg);
+    text(svg, m.l - 8, Y(v) + 4, String(v), "tick", "end");
+  }
+  for (const t of [1, 2, 5, 10, 20].filter((t) => t <= xMax)) {
+    s("line", { x1: X(t), x2: X(t), y1: m.t, y2: H - m.b, class: "grid" }, svg);
+    text(svg, X(t), H - m.b + 16, t + "×", "tick", "middle");
+  }
+  text(svg, W - m.r, H - 6, "Storage vs flat passages (fp32, log scale)", "axis-title", "end");
+  text(svg, m.l, m.t - 4, "Recall@20 (%)", "axis-title");
+  s("line", { x1: m.l, x2: W - m.r, y1: Y(claim), y2: Y(claim), class: "claim-line" }, svg);
+  text(svg, m.l + 6, Y(claim) - 6, `WFM claim, not reproducible: ${f1(claim)}`, "claim-label");
+
+  const sorted = [...pts].sort((a, b) => a.x - b.x);
+  let best = -Infinity;
+  for (const p of sorted) { p.front = p.y > best; if (p.front) best = p.y; }
+  const front = sorted.filter((p) => p.front);
+  s("path", { d: front.map((p, i) => `${i ? "L" : "M"}${X(p.x).toFixed(1)},${Y(p.y).toFixed(1)}`).join(""), class: "frontier-line" }, svg);
+  for (const p of pts) { p.px = X(p.x); p.py = Y(p.y); p.label = META[p.m].name; }
+  placeLabels(pts, { x0: m.l, x1: W - m.r, y0: m.t, y1: H - m.b });
+  for (const p of pts) {
+    s("circle", { cx: p.px, cy: p.py, r: 5.5, class: p.front ? "fill-frontier" : "fill-paper" }, svg);
+    text(svg, p.lx, p.ly, p.label, "point-label" + (p.front ? " front" : ""), p.anchor);
+    const hit = s("circle", { cx: p.px, cy: p.py, r: 14, class: "hit", tabindex: 0, "aria-label": `${p.label}: Recall@20 ${f1(p.y)}, ${mult(p.x)} storage` }, svg);
+    hover(hit, (e) => showTip(e, META[p.m].name, [
+      { value: f1(p.y), label: "Recall@20" },
+      { value: f1(p.y5), label: "Recall@5" },
+      { value: mult(p.x), label: `storage at fp32 (${f1(p.mb)} MB)` },
+      { value: mult(p.int8), label: "storage with int8 vectors" },
+      { value: String(LLM_PER_PASSAGE[p.m]), label: "LLM calls per passage to build" },
+    ]));
+  }
+  box.replaceChildren(svg);
+  $("#scatter-title").textContent = `Recall@20 against storage, relative to flat passages at fp32 · ${lab2Dataset === "all" ? "average of three datasets" : DNAME[lab2Dataset]}`;
+}
+
+function renderLab2Table() {
+  const ds = lab2Dataset;
+  const pick = (fn) => (ds === "all" ? avgOver(fn) : fn(ds));
+  const recalls = LAB2_METHODS.map((m) => KS.map((_, i) => pick((d) => lab2(d).recall[m][i])));
+  const bestAt = KS.map((_, i) => Math.max(...recalls.map((r) => r[i])));
+  const rows = LAB2_METHODS.map((m, j) => [
+    { text: META[m].name, cls: META[m].cls },
+    ...recalls[j].map((v, i) => ({ text: f1(v), best: v === bestAt[i] })),
+    mult(pick((d) => storageX(d, m))),
+    mult(pick((d) => storageX(d, m, "storage_bytes_int8_vectors"))),
+    String(LLM_PER_PASSAGE[m]),
+  ]);
+  $("#lab2-table").replaceChildren(table(["Representation", "R@2", "R@5", "R@10", "R@20", "Storage fp32", "int8 vectors", "LLM calls / passage"], rows));
+  const cis = (ds === "all" ? DATASETS : [ds]).map((d) => {
+    const c = ci(d, "wiki_graph - flat"), t = ci(d, "wiki_graph - triple_graph"), i = ci(d, "id_links - flat");
+    return `${DNAME[d]}: wiki graph vs flat ${signed(c[0])} [${signed(c[1])}, ${signed(c[2])}], vs triple graph ${signed(t[0])} [${signed(t[1])}, ${signed(t[2])}], title links vs flat ${signed(i[0])} [${signed(i[1])}, ${signed(i[2])}]`;
+  });
+  $("#lab2-ci").textContent = `Recall@20 differences with 95% paired-bootstrap intervals over 1,000 questions. ${cis.join(". ")}.`;
+}
+
+function renderExtractorTable() {
+  const E = R.lab2["musique extractors"];
+  const methods = ["flat", "triples", "triple_graph", "id_links", "wiki_links", "wiki_graph"];
+  const rows = Object.entries(E).map(([llm, d]) => [llm, d.stats.unique_facts.toLocaleString("en-US"), ...methods.map((m) => f1(d.recall[m][3]))]);
+  $("#extractor-table").replaceChildren(table(["OpenIE LLM", "Unique facts", ...methods.map((m) => META[m].name)], rows));
+}
+
+/* ---------- Lab 4: context budget ---------- */
+let lab4Dataset = "musique";
+let budgetIndex = 2;
+const CTX = ["facts", "flat", "id_links", "wiki_links", "wiki_graph"];
+
+function drawLines() {
+  const box = $("#lines");
+  const W = Math.max(300, box.clientWidth);
+  const narrow = W < 520;
+  const { B, C } = budgetFacts(lab4Dataset);
+  const m = { l: 40, r: narrow ? 108 : 124, t: 12, b: 42 };
+  const H = narrow ? 300 : 340;
+  const X = (i) => m.l + (i / (B.length - 1)) * (W - m.l - m.r);
+  const Y = (v) => H - m.b - (v / 100) * (H - m.t - m.b);
+  const svg = s("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Line chart of the share of questions with the answer in context at each token budget; the table below lists every value." });
+  for (const v of [0, 25, 50, 75, 100]) {
+    s("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), class: v === 0 ? "baseline" : "grid" }, svg);
+    text(svg, m.l - 8, Y(v) + 4, v + "%", "tick", "end");
+  }
+  B.forEach((b, i) => { if (!narrow || i % 2 === 0) text(svg, X(i), H - m.b + 16, tokens(b), "tick", "middle"); });
+  text(svg, W - m.r, H - 6, "Context budget (tokens, log scale)", "axis-title", "end");
+  s("line", { x1: X(budgetIndex), x2: X(budgetIndex), y1: m.t, y2: H - m.b, class: "selection" }, svg);
+  for (const k of CTX) {
+    const cov = C[k].coverage;
+    s("path", { d: cov.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(""), class: `series stroke-${META[k].cls}` }, svg);
+    s("circle", { cx: X(budgetIndex), cy: Y(cov[budgetIndex]), r: 4, class: `fill-${META[k].cls}` }, svg);
+  }
+  // End labels: keep them in value order, pushed apart just enough, with a leader back to the line end.
+  const ends = CTX.map((k) => ({ k, v: C[k].coverage[B.length - 1] })).sort((a, b) => b.v - a.v);
+  let prev = -Infinity;
+  for (const e of ends) { e.y = Math.max(Y(e.v), prev + 15); prev = e.y; }
+  const overflow = prev - (H - m.b);
+  if (overflow > 0) for (const e of ends) e.y -= overflow;
+  for (const e of ends) {
+    const x0 = X(B.length - 1);
+    s("circle", { cx: x0, cy: Y(e.v), r: 4, class: `fill-${META[e.k].cls}` }, svg);
+    if (Math.abs(e.y - Y(e.v)) > 1) s("path", { d: `M${x0 + 5},${Y(e.v)} L${x0 + 12},${e.y}`, class: "leader" }, svg);
+    const t = text(svg, x0 + 14, e.y + 4, "", "end-label");
+    const val = s("tspan", { class: "end-value" }, t);
+    val.textContent = Math.round(e.v) + "% ";
+    s("tspan", {}, t).textContent = META[e.k].short;
+  }
+  const cross = s("line", { x1: 0, x2: 0, y1: m.t, y2: H - m.b, class: "crosshair", opacity: 0 }, svg);
+  const overlay = s("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, class: "hit" }, svg);
+  const pickIndex = (e) => {
+    const b = svg.getBoundingClientRect();
+    const px = ((e.clientX - b.left) / b.width) * W;
+    return Math.max(0, Math.min(B.length - 1, Math.round(((px - m.l) / (W - m.l - m.r)) * (B.length - 1))));
+  };
+  overlay.addEventListener("pointermove", (e) => {
+    const i = pickIndex(e);
+    cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i)); cross.setAttribute("opacity", 1);
+    const rows = CTX.map((k) => ({ k, v: C[k].coverage[i] })).sort((a, b) => b.v - a.v);
+    showTip(e, `${tokens(B[i])} tokens`, rows.map((r) => ({ value: f1(r.v) + "%", label: META[r.k].name, cls: META[r.k].cls })));
+  });
+  overlay.addEventListener("pointerleave", () => { cross.setAttribute("opacity", 0); hideTip(); });
+  overlay.addEventListener("click", (e) => { budgetIndex = pickIndex(e); $("#budget").value = budgetIndex; renderLab4(); });
+  box.replaceChildren(svg);
+}
+
+function renderLab4() {
+  const { B, C, bestPassage } = budgetFacts(lab4Dataset);
+  $("#budget-out").textContent = `${tokens(B[budgetIndex])} tokens`;
+  $("#lines-legend").replaceChildren(...CTX.map((k) => h("span", {}, h("i", { class: `swatch-line fill-${META[k].cls}` }), document.createTextNode(META[k].name))));
+  drawLines();
+  const ranked = CTX.map((k) => ({ k, v: C[k].coverage[budgetIndex] })).sort((a, b) => b.v - a.v);
+  $("#bars-title").textContent = `At ${tokens(B[budgetIndex])} tokens · ${DNAME[lab4Dataset]} (${lab2(lab4Dataset).context.eligible_questions} questions)`;
+  $("#bars").replaceChildren(...ranked.map((r) =>
+    h("div", { class: "bar-row" },
+      h("span", { class: "name", text: META[r.k].name }),
+      h("div", { class: "bar-track" }, h("div", { class: `bar-fill fill-${META[r.k].cls}`, style: `width:${Math.max(1, r.v)}%` })),
+      h("span", { class: "val", text: Math.round(r.v) + "%" }))));
+  $("#median-stats").replaceChildren(h("span", { text: "Median tokens until the answer appears:" }),
+    ...CTX.map((k) => h("span", {}, document.createTextNode(`${META[k].short} `), h("b", { text: medianText(C[k].median_tokens) }))));
+  const fastest = CTX.reduce((a, k) => ((C[k].median_tokens ?? Infinity) < (C[a].median_tokens ?? Infinity) ? k : a), CTX[0]);
+  const last = B.length - 1;
+  const factsTail = `At ${tokens(B[last])} tokens, facts carry the answer for ${Math.round(C.facts.coverage[last])}% of questions and the best passage method for ${Math.round(bestPassage[last])}%.`;
+  $("#lab4-summary").textContent = fastest === "flat"
+    ? `On ${DNAME[lab4Dataset]}, the median question has its answer after ${medianText(C.flat.median_tokens)} tokens of flat passages, and the linked methods are close behind; facts need ${medianText(C.facts.median_tokens)}. ${factsTail}`
+    : `On ${DNAME[lab4Dataset]}, the median question has its answer after ${medianText(C[fastest].median_tokens)} tokens of context from ${META[fastest].name}, against ${medianText(C.flat.median_tokens)} for flat passages and ${medianText(C.facts.median_tokens)} for facts. ${factsTail}`;
+  const rows = DATASETS.flatMap((d) => CTX.map((k) => [
+    { text: `${DNAME[d]} · ${META[k].name}`, cls: META[k].cls },
+    ...lab2(d).context.methods[k].coverage.map((v) => f1(v)),
+    lab2(d).context.methods[k].median_tokens === null ? `>${tokens(B[B.length - 1])}` : tokens(Math.round(lab2(d).context.methods[k].median_tokens)),
+  ]));
+  $("#lab4-table").replaceChildren(table(["Dataset · context", ...B.map((b) => tokens(b)), "Median tokens"], rows));
+}
+
+function renderApps() {
+  const v = values();
+  const linked = ["id_links", "wiki_links", "wiki_graph"];
+  const bits = DATASETS.map((d) => {
+    const C = lab2(d).context.methods;
+    const best = linked.reduce((a, k) => ((C[k].median_tokens ?? Infinity) < (C[a].median_tokens ?? Infinity) ? k : a), linked[0]);
+    return `${DNAME[d]} ${medianText(C.facts.median_tokens)} vs ${medianText(C[best].median_tokens)}`;
+  });
+  const two = lab2("2wikimultihopqa").context.methods;
+  const i256 = R.settings.budgets.indexOf(256);
+  const memory = DATASETS.map((d) => signed(ci(d, "wiki_links - flat")[0]));
+  const copy = {
+    ...v,
+    ...corpusValues(),
+    appBudget: `Measured: median tokens until the answer appears, facts vs the best linked-passage method: ${bits.join("; ")}. The fact layer's re-ranking earns its keep in the first slots: at 256 tokens on 2Wiki the wiki graph holds the answer for ${Math.round(two.wiki_graph.coverage[i256])}% of questions, flat passages for ${Math.round(two.flat.coverage[i256])}%.`,
+    appMemory: `Measured: seeding the walk from the top five dense hits and following entity links adds ${list3(memory)} Recall@20 points over flat retrieval on HotpotQA, 2Wiki and MuSiQue. The first five results stay the same five passages dense retrieval returns.`,
+  };
+  for (const el of document.querySelectorAll("[data-v]")) el.textContent = copy[el.dataset.v];
+  $("#odds").replaceChildren(document.createTextNode(`all ${v.wholeCells} together, about once in 10`), h("sup", { text: String(2 * v.wholeCells) }));
+}
+
+/* ---------- Lab 5: structure ---------- */
+const OVERLAYS = ["id_links", "wiki_links"];
+const PAIR_KINDS = [
+  ["same home", "Same page or document", "o1"],
+  ["direct reference", "Direct reference", "o2"],
+  ["shared identifier", "Shared identifier", "o3"],
+  ["not linked", "Not linked", "paper"],
+];
+const st = (d, k) => lab2(d).structure[k];
+const range = (xs, fmt = (x) => Math.round(x)) => `${fmt(Math.min(...xs))}–${fmt(Math.max(...xs))}`;
+const between = (xs, fmt) => `between ${fmt(Math.min(...xs))} and ${fmt(Math.max(...xs))}`;
+const loss = (xs) => (Math.min(...xs) < 0 ? `loses up to ${f1(-Math.min(...xs))} points` : "loses nothing");
+
+function renderPairs() {
+  $("#pairs-legend").replaceChildren(...PAIR_KINDS.map(([, label, cls]) => h("span", {}, h("i", { class: `swatch-dot fill-${cls}` }), document.createTextNode(label))));
+  const rows = [];
+  DATASETS.forEach((d, i) => {
+    if (i) rows.push(h("div", { class: "stack-gap" }));
+    for (const k of OVERLAYS) {
+      const gp = st(d, k).gold_pairs;
+      const bar = h("div", { class: "stack" });
+      for (const [key, label, cls] of PAIR_KINDS) {
+        if (gp[key] <= 0) continue;
+        const seg = h("div", { class: `seg fill-${cls}`, style: `flex:${gp[key]} 1 0`, tabindex: 0, "aria-label": `${DNAME[d]}, ${META[k].name}: ${label} ${f1(gp[key])}%` });
+        hover(seg, (e) => showTip(e, `${DNAME[d]} · ${META[k].name}`, PAIR_KINDS.map(([kk, l, c]) => ({ value: f1(gp[kk]) + "%", label: l, cls: c }))));
+        bar.append(seg);
+      }
+      rows.push(h("div", { class: "stack-row" }, h("span", { class: "name", text: `${DNAME[d]} · ${META[k].short}` }), bar));
+    }
+  });
+  $("#pairs").replaceChildren(...rows);
+}
+
+function drawPredict() {
+  const box = $("#predict");
+  const W = Math.max(280, box.clientWidth), H = 290;
+  const m = { l: 44, r: 16, t: 14, b: 42 };
+  const pts = DATASETS.flatMap((d) => OVERLAYS.map((k) => ({ d, k, x: st(d, k).missed_one_hop_from_a_seed, y: ci(d, `${k} - flat`)[0] })));
+  const yMin = Math.min(-5, Math.floor(Math.min(...pts.map((p) => p.y)) / 5) * 5);
+  const yMax = Math.max(5, Math.ceil((Math.max(...pts.map((p) => p.y)) + 2) / 5) * 5);
+  const X = (v) => m.l + (v / 100) * (W - m.l - m.r);
+  const Y = (v) => H - m.b - ((v - yMin) / (yMax - yMin)) * (H - m.t - m.b);
+  const svg = s("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Scatter of Recall@20 gain against the share of missed evidence one link from a dense hit; the table below lists every value." });
+  const step = yMax - yMin > 30 ? 10 : 5;
+  for (let v = yMin; v <= yMax; v += step) {
+    s("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), class: v === 0 ? "baseline" : "grid" }, svg);
+    text(svg, m.l - 8, Y(v) + 4, (v > 0 ? "+" : "") + v, "tick", "end");
+  }
+  for (const t of [0, 25, 50, 75, 100]) text(svg, X(t), H - m.b + 16, t + "%", "tick", "middle");
+  text(svg, W - m.r, H - 6, "Missed evidence one link from a dense hit", "axis-title", "end");
+  text(svg, m.l, m.t - 4, "Recall@20 gain (points)", "axis-title");
+  for (const p of pts) { p.px = X(p.x); p.py = Y(p.y); p.label = DNAME[p.d]; }
+  placeLabels(pts, { x0: m.l, x1: W - m.r, y0: m.t, y1: H - m.b });
+  for (const p of pts) {
+    s("circle", { cx: p.px, cy: p.py, r: 5.5, class: `fill-${META[p.k].cls}` }, svg);
+    text(svg, p.lx, p.ly, p.label, "point-label", p.anchor);
+    const hit = s("circle", { cx: p.px, cy: p.py, r: 14, class: "hit", tabindex: 0, "aria-label": `${p.label}, ${META[p.k].name}: ${f1(p.x)}% one link away, ${signed(p.y)} Recall@20` }, svg);
+    hover(hit, (e) => showTip(e, `${DNAME[p.d]} · ${META[p.k].name}`, [
+      { value: signed(p.y), label: "Recall@20 over flat", cls: META[p.k].cls },
+      { value: f1(p.x) + "%", label: "of missed evidence one link away" },
+      { value: f1(st(p.d, p.k).missed_recovered.walk) + "%", label: "of missed evidence recovered" },
+    ]));
+  }
+  box.replaceChildren(svg);
+}
+
+const VARIANTS = [["walk", "walk"], ["expand", "one hop by similarity"], ["walk_once", "one weighted step"]];
+const variantDiffs = (v) => DATASETS.flatMap((d) => OVERLAYS.map((k) => st(d, k).variants[v].minus_walk_ci95["R@20"][0]));
+
+// True when, within every overlay, the datasets rank the same on missed-evidence-one-hop-away as on Recall@20 gain.
+function sameOrder() {
+  return OVERLAYS.every((k) => {
+    const byHop = [...DATASETS].sort((a, b) => st(a, k).missed_one_hop_from_a_seed - st(b, k).missed_one_hop_from_a_seed);
+    const byGain = [...DATASETS].sort((a, b) => ci(a, `${k} - flat`)[0] - ci(b, `${k} - flat`)[0]);
+    return byHop.join() === byGain.join();
+  });
+}
+
+function renderLab5() {
+  renderPairs();
+  drawPredict();
+  const rows = DATASETS.flatMap((d) => OVERLAYS.map((k) => {
+    const x = st(d, k), c = x.variants.walk_once.minus_walk_ci95["R@20"];
+    const recall = [lab2(d).recall[k][3], x.variants.expand.recall[3], x.variants.walk_once.recall[3]];
+    return [
+      { text: `${DNAME[d]} · ${META[k].name}`, cls: META[k].cls },
+      f1(x.dense_foothold) + "%",
+      f1(100 - x.gold_pairs["not linked"]) + "%",
+      f1(x.links_on_top_1pct_identifiers) + "%",
+      `${f1(x.missed_one_hop_from_a_seed)}% of ${x.missed_gold_units.toLocaleString("en-US")}`,
+      VARIANTS.map(([v]) => f1(x.missed_recovered[v]) + "%").join(" / "),
+      recall.map(f1).join(" / "),
+      `${signed(c[0])} [${signed(c[1])}, ${signed(c[2])}]`,
+    ];
+  }));
+  $("#lab5-table").replaceChildren(table(["Dataset · overlay", "Dense foothold", "Evidence pairs linked", "Links on top 1% of identifiers",
+    "Missed evidence one hop away", "Missed recovered: walk / one hop / one step", "R@20: walk / one hop / one step", "One step minus walk, R@20 (95% CI)"], rows));
+  $("#lab5-note").textContent = "Dense foothold: at least one evidence passage in the dense top five. Evidence pairs linked: pairs of one question's evidence passages that share a home or an identifier. " +
+    "One hop: expand the seeds' identifiers and rank what they reach by similarity to the question. One step: rank what they reach by one step of the walk, splitting weight by identifier degree so that rare identifiers count and hubs do not.";
+  const linked = (d, k) => 100 - st(d, k).gold_pairs["not linked"];
+  const hop = variantDiffs("expand"), once = variantDiffs("walk_once");
+  $("#lab5-summary").textContent =
+    `Dense search lands at least one evidence passage in its top five for ${range(DATASETS.map((d) => st(d, "id_links").dense_foothold))}% of questions, so a foothold is rarely the problem. ` +
+    `Title links connect ${Math.round(linked("2wikimultihopqa", "id_links"))}% of 2Wiki's evidence pairs and ${Math.round(linked("hotpotqa", "id_links"))}% of HotpotQA's, but only ${Math.round(linked("musique", "id_links"))}% of MuSiQue's, where NER links reach ${Math.round(linked("musique", "wiki_links"))}%. ` +
+    (sameOrder() ? "Under both overlays, the datasets rank the same way on missed evidence one link from a dense hit as they do on the gain. " : "") +
+    `How the reached passages are ranked matters as much as reaching them. Ranking them by similarity to the question ${loss(hop)} of Recall@20 against the walk, because the evidence dense search missed is unlike the question by definition. One degree-weighted step lands ${between(once, (x) => signed(x))} points from the walk.`;
+}
+
+function corpusValues() {
+  const prefix = DATASETS.map((d) => R.lab1[d].variants["title+text fp32"].recall[1] - R.lab1[d].variants["text-only fp32"].recall[1]);
+  const foot = DATASETS.map((d) => st(d, "id_links").dense_foothold);
+  const hop = DATASETS.flatMap((d) => OVERLAYS.map((k) => st(d, k).missed_one_hop_from_a_seed));
+  return {
+    titlePrefix: `On the benchmarks the title prefix alone is worth ${range(prefix, f1)} points of Recall@5.`,
+    foothold: `Expansion starts from the dense top five. Here that holds at least one evidence passage for ${range(foot)}% of questions; for the rest, links cannot help.`,
+    oneHop: `Between ${range(hop)}% of the evidence dense retrieval misses sits one link from its top five, depending on the corpus and overlay${sameOrder() ? ", and the gain rises with that share" : ""}.`,
+    specificity: `On the benchmarks, one step weighted by identifier degree matched the full PageRank walk (${between(variantDiffs("walk_once"), (x) => signed(x))} points of Recall@20), while ranking the same neighbors by similarity ${loss(variantDiffs("expand"))}.`,
+  };
+}
+
+function renderAll() {
+  renderMeta();
+  renderLedger();
+  drawDumbbell();
+  renderLab1Table();
+  drawScatter();
+  renderLab2Table();
+  renderExtractorTable();
+  renderLab4();
+  renderLab5();
+  renderApps();
+}
+
+if (!R) {
+  $("#page").prepend(h("div", { class: "missing", text: "No results are embedded in this page. Run `uv run reproof.py` to generate results/wfm-reproof.html." }));
+} else {
+  segmented($("#lab2-seg"), [["all", "All three"], ...DATASETS.map((d) => [d, DNAME[d]])], lab2Dataset, (k) => { lab2Dataset = k; drawScatter(); renderLab2Table(); });
+  segmented($("#lab4-seg"), DATASETS.map((d) => [d, DNAME[d]]), lab4Dataset, (k) => { lab4Dataset = k; renderLab4(); });
+  $("#budget").addEventListener("input", (e) => { budgetIndex = Number(e.target.value); renderLab4(); });
+  renderAll();
+  let width = document.body.clientWidth;
+  new ResizeObserver(() => {
+    if (Math.abs(document.body.clientWidth - width) < 2) return;
+    width = document.body.clientWidth;
+    drawDumbbell(); drawScatter(); drawLines(); drawPredict();
+  }).observe(document.body);
+}
+</script>

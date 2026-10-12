@@ -1,0 +1,134 @@
+# WFM re-proof results
+
+Run 2026-10-12 on Windows AMD64, Python 3.11.15 in 7 min.
+
+## Lab 1 - Native RAG re-measured (all-MiniLM-L6-v2, HippoRAG 2 subsets)
+
+| Dataset | Passages | Measured R@2/5/10/20 | Paper R@2/5/10/20 | Gap per k | Whole-number gaps |
+|---|---|---|---|---|---|
+| HotpotQA | 9811 | 58.0 / 74.0 / 80.5 / 85.2 | 44.2 / 55.4 / 62.7 / 68.1 | +13.760 / +18.650 / +17.870 / +17.150 | no |
+| 2Wiki | 6119 | 51.3 / 61.8 / 66.2 / 69.2 | 31.3 / 31.8 / 46.2 / 49.2 | +19.995 / +30.000 / +20.005 / +20.005 | yes |
+| MuSiQue | 11656 | 37.3 / 49.3 / 57.1 / 64.4 | 17.3 / 19.3 / 37.1 / 44.4 | +19.995 / +29.995 / +20.000 / +20.002 | yes |
+
+Storage variants of the flat index (R@5 / R@20, bytes per vector):
+
+| Dataset | title+text fp32 | text-only fp32 | title+text int8 | title+text 1-bit |
+|---|---|---|---|---|
+| HotpotQA | 74.0 / 85.2 (1536 B) | 73.8 / 85.0 (1536 B) | 74.0 / 85.1 (384 B) | 70.9 / 83.2 (48 B) |
+| 2Wiki | 61.8 / 69.2 (1536 B) | 59.8 / 68.6 (1536 B) | 61.8 / 69.2 (384 B) | 58.7 / 67.3 (48 B) |
+| MuSiQue | 49.3 / 64.4 (1536 B) | 45.7 / 61.8 (1536 B) | 49.3 / 64.4 (384 B) | 46.0 / 61.6 (48 B) |
+
+## Lab 2 - Representations (v1 corpora, GPT-3.5 OpenIE)
+
+| Dataset | Method | R@2 | R@5 | R@10 | R@20 | Storage fp32 | vs flat | Storage int8 | vs flat | LLM calls |
+|---|---|---|---|---|---|---|---|---|---|---|
+| HotpotQA | flat | 57.2 | 71.8 | 80.0 | 84.8 | 19.4 MB | 1.0x | 8.8 MB | 1.0x | 0 |
+| HotpotQA | triples | 53.8 | 69.5 | 78.2 | 84.2 | 157.7 MB | 8.1x | 44.0 MB | 5.0x | 18442 |
+| HotpotQA | triple_graph | 50.4 | 71.2 | 79.0 | 82.0 | 160.6 MB | 8.3x | 47.0 MB | 5.3x | 18442 |
+| HotpotQA | id_links | 48.4 | 71.8 | 88.5 | 91.7 | 19.7 MB | 1.0x | 9.1 MB | 1.0x | 0 |
+| HotpotQA | wiki_links | 54.6 | 71.8 | 86.9 | 92.0 | 21.1 MB | 1.1x | 10.5 MB | 1.2x | 9221 |
+| HotpotQA | wiki_graph | 51.2 | 78.1 | 88.8 | 93.5 | 181.2 MB | 9.3x | 56.9 MB | 6.5x | 18442 |
+| 2Wiki | flat | 51.3 | 61.8 | 66.2 | 69.2 | 12.1 MB | 1.0x | 5.1 MB | 1.0x | 0 |
+| 2Wiki | triples | 56.8 | 66.0 | 69.5 | 71.8 | 81.0 MB | 6.7x | 22.6 MB | 4.5x | 12238 |
+| 2Wiki | triple_graph | 57.4 | 76.1 | 80.4 | 82.2 | 82.5 MB | 6.8x | 24.1 MB | 4.7x | 12238 |
+| 2Wiki | id_links | 46.8 | 61.8 | 84.3 | 90.9 | 12.3 MB | 1.0x | 5.3 MB | 1.0x | 0 |
+| 2Wiki | wiki_links | 50.2 | 61.8 | 81.5 | 89.2 | 13.2 MB | 1.1x | 6.1 MB | 1.2x | 6119 |
+| 2Wiki | wiki_graph | 57.6 | 79.7 | 86.2 | 89.1 | 95.2 MB | 7.9x | 29.8 MB | 5.9x | 12238 |
+| MuSiQue | flat | 37.3 | 49.3 | 57.1 | 64.4 | 23.8 MB | 1.0x | 10.4 MB | 1.0x | 0 |
+| MuSiQue | triples | 34.5 | 46.0 | 53.7 | 61.9 | 171.7 MB | 7.2x | 47.9 MB | 4.6x | 23312 |
+| MuSiQue | triple_graph | 34.4 | 46.8 | 53.1 | 58.5 | 174.9 MB | 7.4x | 51.1 MB | 4.9x | 23312 |
+| MuSiQue | id_links | 33.0 | 49.3 | 58.6 | 63.5 | 24.2 MB | 1.0x | 10.8 MB | 1.0x | 0 |
+| MuSiQue | wiki_links | 34.0 | 49.3 | 60.8 | 68.5 | 25.6 MB | 1.1x | 12.2 MB | 1.2x | 11656 |
+| MuSiQue | wiki_graph | 34.7 | 51.3 | 64.1 | 72.6 | 199.9 MB | 8.4x | 62.7 MB | 6.1x | 23312 |
+
+Average R@20 across the three datasets (the paper's ablation metric; WFM claims 86.20):
+
+- flat: 72.84
+- triples: 72.61
+- triple_graph: 74.20
+- id_links: 82.02
+- wiki_links: 83.26
+- wiki_graph: 85.06
+
+Paired bootstrap 95% CI of recall differences (points):
+
+- HotpotQA wiki_graph - flat: R@5 +6.35 [+4.50, +8.25]; R@20 +8.65 [+7.30, +9.90]
+- HotpotQA wiki_graph - triple_graph: R@5 +6.95 [+5.55, +8.40]; R@20 +11.55 [+9.90, +13.20]
+- HotpotQA wiki_graph - wiki_links: R@5 +6.35 [+4.65, +8.20]; R@20 +1.50 [+0.30, +2.80]
+- HotpotQA wiki_links - flat: R@5 +0.00 [+0.00, +0.00]; R@20 +7.15 [+5.50, +8.75]
+- HotpotQA id_links - flat: R@5 +0.00 [+0.00, +0.00]; R@20 +6.80 [+5.10, +8.40]
+- HotpotQA wiki_links - id_links: R@5 +0.00 [+0.00, +0.00]; R@20 +0.35 [-0.60, +1.30]
+- HotpotQA triples - flat: R@5 -2.30 [-4.00, -0.65]; R@20 -0.70 [-2.10, +0.70]
+- HotpotQA triple_graph - flat: R@5 -0.60 [-2.80, +1.50]; R@20 -2.90 [-4.95, -0.90]
+- 2Wiki wiki_graph - flat: R@5 +17.88 [+16.10, +19.58]; R@20 +19.85 [+18.35, +21.35]
+- 2Wiki wiki_graph - triple_graph: R@5 +3.60 [+2.42, +4.72]; R@20 +6.92 [+5.67, +8.23]
+- 2Wiki wiki_graph - wiki_links: R@5 +17.88 [+16.00, +19.65]; R@20 -0.17 [-1.45, +1.10]
+- 2Wiki wiki_links - flat: R@5 +0.00 [+0.00, +0.00]; R@20 +20.02 [+18.32, +21.75]
+- 2Wiki id_links - flat: R@5 +0.00 [+0.00, +0.00]; R@20 +21.70 [+19.95, +23.50]
+- 2Wiki wiki_links - id_links: R@5 +0.00 [+0.00, +0.00]; R@20 -1.68 [-2.50, -0.82]
+- 2Wiki triples - flat: R@5 +4.15 [+2.75, +5.58]; R@20 +2.60 [+1.27, +3.88]
+- 2Wiki triple_graph - flat: R@5 +14.28 [+12.32, +16.23]; R@20 +12.93 [+10.92, +14.90]
+- MuSiQue wiki_graph - flat: R@5 +2.00 [+0.22, +3.80]; R@20 +8.15 [+6.69, +9.48]
+- MuSiQue wiki_graph - triple_graph: R@5 +4.53 [+3.31, +5.82]; R@20 +14.08 [+12.33, +15.88]
+- MuSiQue wiki_graph - wiki_links: R@5 +2.00 [+0.18, +3.85]; R@20 +4.05 [+2.54, +5.62]
+- MuSiQue wiki_links - flat: R@5 +0.00 [+0.00, +0.00]; R@20 +4.10 [+2.18, +5.86]
+- MuSiQue id_links - flat: R@5 +0.00 [+0.00, +0.00]; R@20 -0.96 [-2.68, +0.71]
+- MuSiQue wiki_links - id_links: R@5 +0.00 [+0.00, +0.00]; R@20 +5.06 [+3.58, +6.47]
+- MuSiQue triples - flat: R@5 -3.28 [-4.66, -1.72]; R@20 -2.58 [-3.94, -1.18]
+- MuSiQue triple_graph - flat: R@5 -2.52 [-4.38, -0.62]; R@20 -5.93 [-8.10, -3.80]
+
+Extractor robustness on MuSiQue (R@5 / R@20):
+
+| OpenIE LLM | Unique facts | flat | triples | triple_graph | id_links | wiki_links | wiki_graph |
+|---|---|---|---|---|---|---|---|
+| gpt-3.5-turbo | 107451 | 49.3 / 64.4 | 46.0 / 61.9 | 46.8 / 58.5 | 49.3 / 63.5 | 49.3 / 68.5 | 51.3 / 72.6 |
+| gpt-4o-mini | 125882 | 49.3 / 64.4 | 46.3 / 62.3 | 48.4 / 61.8 | 49.3 / 63.5 | 49.3 / 65.5 | 51.4 / 72.1 |
+| llama-3.3-70b | 140767 | 49.3 / 64.4 | 45.4 / 61.9 | 48.5 / 63.4 | 49.3 / 63.5 | 49.3 / 70.2 | 52.8 / 73.3 |
+
+Build cost:
+
+- HotpotQA: {'passages': 9221, 'unique_facts': 98674, 'entities': 96914, 'entity_entity_edges': 94922, 'entity_passage_links': 145650, 'titles': 8978, 'title_links': 19234}; embed passages 69.0s vs facts 65.7s (CPU); OpenIE ~8.6M input + 1.9M output tokens
+- 2Wiki: {'passages': 6119, 'unique_facts': 50674, 'entities': 52552, 'entity_entity_edges': 48799, 'entity_passage_links': 77642, 'titles': 5987, 'title_links': 9507}; embed passages 31.9s vs facts 35.6s (CPU); OpenIE ~5.3M input + 1.0M output tokens
+- MuSiQue: {'passages': 11656, 'unique_facts': 107451, 'entities': 105785, 'entity_entity_edges': 103315, 'entity_passage_links': 161672, 'titles': 9738, 'title_links': 27510}; embed passages 78.1s vs facts 74.9s (CPU); OpenIE ~10.4M input + 2.1M output tokens
+
+## Lab 4 - What fits in the model's context
+
+Share of questions whose gold answer appears within the first N context tokens (answers not yes/no and not named in the question).
+
+| Dataset | Context | 64 tok | 128 tok | 256 tok | 512 tok | 1024 tok | 2048 tok | 4096 tok | Median tokens |
+|---|---|---|---|---|---|---|---|---|---|
+| HotpotQA (830 q) | facts | 22.0 | 28.4 | 36.5 | 43.4 | 50.2 | 57.0 | 61.6 | 1007 |
+| HotpotQA (830 q) | flat | 26.4 | 38.8 | 51.2 | 60.2 | 70.4 | 76.3 | 82.2 | 243 |
+| HotpotQA (830 q) | id_links | 22.7 | 34.0 | 47.8 | 59.8 | 81.4 | 90.4 | 91.7 | 302 |
+| HotpotQA (830 q) | wiki_links | 25.8 | 37.0 | 50.0 | 60.4 | 77.5 | 88.7 | 92.4 | 256 |
+| HotpotQA (830 q) | wiki_graph | 21.1 | 33.5 | 49.8 | 67.8 | 81.7 | 88.2 | 92.2 | 265 |
+| 2Wiki (521 q) | facts | 4.2 | 9.0 | 16.3 | 23.8 | 28.0 | 33.2 | 39.9 | >4096 |
+| 2Wiki (521 q) | flat | 3.3 | 6.0 | 12.1 | 24.8 | 35.5 | 43.4 | 52.0 | 3261 |
+| 2Wiki (521 q) | id_links | 2.1 | 4.4 | 11.7 | 33.6 | 72.2 | 93.1 | 96.0 | 682 |
+| 2Wiki (521 q) | wiki_links | 3.1 | 4.8 | 13.1 | 37.8 | 63.3 | 87.1 | 95.2 | 684 |
+| 2Wiki (521 q) | wiki_graph | 4.0 | 10.9 | 32.6 | 59.9 | 77.4 | 84.8 | 88.7 | 390 |
+| MuSiQue (977 q) | facts | 11.5 | 19.4 | 26.4 | 31.2 | 36.4 | 42.6 | 49.4 | >4096 |
+| MuSiQue (977 q) | flat | 12.2 | 19.5 | 30.2 | 40.7 | 48.4 | 56.2 | 65.9 | 1273 |
+| MuSiQue (977 q) | id_links | 9.4 | 15.7 | 26.9 | 40.0 | 52.4 | 57.9 | 62.3 | 805 |
+| MuSiQue (977 q) | wiki_links | 10.5 | 16.8 | 26.2 | 43.1 | 56.1 | 63.7 | 72.4 | 706 |
+| MuSiQue (977 q) | wiki_graph | 11.4 | 18.2 | 30.2 | 40.6 | 52.5 | 65.8 | 74.8 | 896 |
+
+## Lab 5 - The structure the link walk uses
+
+Gold pairs: evidence passages of one question, by what links them. Missed: gold passages outside the dense top 20.
+
+| Dataset | Overlay | Mentions/unit | Units sharing an id | Links on top 1% ids | Gold pairs: same home / direct ref / shared id / none | Dense foothold (gold in top 5) | Missed one hop from a seed | Missed recovered: walk / expand / walk once | R@20 walk / expand / walk once | Expand - walk R@20 (95% CI) | Walk once - walk R@20 (95% CI) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| HotpotQA | id_links | 1.09 | 71.7% | 24.6% | 0.4 / 65.1 / 2.7 / 31.8 | 95.0% | 73.6% of 303 | 71.0% / 47.2% / 69.0% | 91.7 / 89.5 / 92.2 | -2.15 [-3.25, -1.00] | +0.50 [-0.10, +1.15] |
+| HotpotQA | wiki_links | 11.01 | 97.8% | 24.4% | 0.0 / 0.0 / 76.6 / 23.4 | 95.0% | 86.5% of 303 | 69.6% / 20.8% / 70.3% | 92.0 / 86.8 / 92.2 | -5.25 [-6.65, -3.85] | +0.20 [+0.05, +0.40] |
+| 2Wiki | id_links | 0.56 | 57.1% | 10.5% | 0.0 / 43.7 / 0.3 / 55.9 | 97.7% | 81.6% of 838 | 81.1% / 69.9% / 81.4% | 90.9 / 88.6 / 92.9 | -2.30 [-3.43, -1.23] | +1.95 [+1.27, +2.73] |
+| 2Wiki | wiki_links | 9.51 | 95.0% | 20.7% | 0.0 / 0.0 / 55.5 / 44.5 | 97.7% | 88.9% of 838 | 75.2% / 13.0% / 75.2% | 89.2 / 71.8 / 89.3 | -17.43 [-19.02, -15.90] | +0.07 [-0.17, +0.33] |
+| MuSiQue | id_links | 1.37 | 76.5% | 38.8% | 1.9 / 18.9 / 14.6 / 64.6 | 90.6% | 48.6% of 1015 | 21.5% / 11.3% / 22.9% | 63.5 / 63.0 / 64.5 | -0.44 [-1.75, +0.87] | +1.05 [+0.60, +1.52] |
+| MuSiQue | wiki_links | 9.62 | 97.8% | 27.5% | 0.0 / 0.0 / 64.1 / 35.9 | 90.6% | 72.2% of 1015 | 29.5% / 12.1% / 29.5% | 68.5 / 66.8 / 68.4 | -1.78 [-3.49, -0.02] | -0.13 [-0.51, +0.25] |
+
+## Lab 3 - Audit of the paper's tables
+
+> The newly completed cells and diagnostic sweeps are constructed planning values and require validation with measured runs before external use.
+
+- Recall falls as k grows: HippoRAG-IRCOT in tab:multihop-recall block 0: [61.3, 76.9, 76.1, 83.8]
+

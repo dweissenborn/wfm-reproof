@@ -1,0 +1,14 @@
+[project]
+name = "wfm-reproof"
+version = "0.1.0"
+description = "Independent re-proof of arXiv:2609.18182 (WFM) retrieval claims on its public benchmarks, with a training-free identifier-link overlay"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2",
+    "scipy>=1.13",
+    "sentence-transformers>=3",
+]
+
+[tool.uv]
+package = false
